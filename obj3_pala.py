@@ -1,7 +1,7 @@
 from tkinter import messagebox, StringVar
 from tkinter import ttk, Tk
 from obj1_pala import cifrar_cesar
-from cifrado_atbash import cifrar_atbash
+from obj2_pala import cifrar_atbash
 
 def ventana_error(mensaje, titulo):
     messagebox.showerror(titulo, mensaje)

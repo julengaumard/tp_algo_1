@@ -60,6 +60,14 @@ def pruebas_cifrar_cesar():
     'KROD pxqgr #3'
     >>> cifrar_cesar("333",-23)
     '000'
+    >>> cifrar_cesar("!000",-5)
+    '!555'
+    >>> cifrar_cesar("aaZZ",-1)
+    'zzYY'
+    >>> cifrar_cesar("numero1",10)
+    'xewoby1'
+    >>> cifrar_cesar("xewoby1",-10)
+    'numero1'
     '''
 
 import doctest
