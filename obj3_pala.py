@@ -139,13 +139,6 @@ def Ventana_principal():
     #--Parametros iniciales de la ventana principal--
 
     ventana2 = crear_ventana()
-
-    # ventana2 = Tk()
-    # ventana2.title("TP Grupal Parte 1 - Grupo: Pala")
-    # ventana2.iconbitmap("icon.ico")
-    # ventana2.resizable(0,0)
-    # estilo = ttk.Style(ventana2)
-    # estilo.theme_use("vista")
     # ventana2.config(relief="groove",bd = 10)
 
     Frame_principal_2 = ttk.Frame(ventana2)
@@ -198,7 +191,7 @@ def Ventana_principal():
 
 #--------------------------Ventana de bienvenida-----------------------------
 
-def menu_screen():
+def menu_screen(root):
     # Destruye la ventana de bienvenida y crea la ventana principal
     # Autor: Julen Gaumard
 
@@ -227,7 +220,7 @@ def ventana_bienvenida(root):
     ttk.Label(global_frame,text="A la aplicación de mensajes secretos del grupo Pala.").grid(row=1, column=0, padx=5, sticky="w")
     ttk.Label(global_frame,text="Para continuar presione continuar, de lo contrario cierre la ventana.").grid(row=2, column=0, padx=5, sticky="w")
 
-    ttk.Button(global_frame, text="Continuar", command = menu_screen).grid(row=3, column=0, padx=5, pady=10, sticky="e")
+    ttk.Button(global_frame, text="Continuar", command = lambda : menu_screen(root)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
 
     desarrollado_frame = ttk.Frame(global_frame)
     ttk.Label(desarrollado_frame,text="Construída por:", foreground="grey").grid(row=0, column=0, padx=5, sticky="w")
@@ -239,6 +232,11 @@ def ventana_bienvenida(root):
     desarrollado_frame.grid(row=5, column=0, sticky="w", columnspan=2)
     global_frame.pack(padx=10, pady=10)
 
-root = crear_ventana()
-ventana_bienvenida(root)
-root.mainloop()
+def main():
+    # Comienza la aplicacion, creando la ventana de bienvenida
+    # Autor: Julen Gaumard
+    root = crear_ventana()
+    ventana_bienvenida(root)
+    root.mainloop()
+
+main()
