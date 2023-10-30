@@ -8,7 +8,7 @@ def desplazar(letra, clave):
     
     if letra.isnumeric():
 
-        ascii_desplazado += clave%10
+        ascii_desplazado += clave % 10
 
         if ascii_desplazado > 57:
             ascii_desplazado -= 10
@@ -17,7 +17,7 @@ def desplazar(letra, clave):
 
     elif letra.islower():
         
-        ascii_desplazado += clave%26
+        ascii_desplazado += clave % 26
 
         if ascii_desplazado > 122:
             ascii_desplazado -= 26
@@ -26,7 +26,7 @@ def desplazar(letra, clave):
 
     elif letra.isupper():
 
-        ascii_desplazado += clave%26
+        ascii_desplazado += clave % 26
         
         if ascii_desplazado > 90:
             ascii_desplazado -= 26
@@ -78,7 +78,7 @@ def cifrar_atbash(mensaje):
 
     return mensaje_cifrado
 
-#---------------------------Interfaz Gradica------------------------------
+#---------------------------Interfaz Grafica------------------------------
 from tkinter import * 
 from tkinter import ttk
 from tkinter import messagebox
