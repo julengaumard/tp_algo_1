@@ -1,87 +1,8 @@
-
-# No considera letras con tildes
-def desplazar(letra, clave):
-    # Desplaza los caracteres a la posicion determinada por la clave. Tanto para encriptar como desencriptar
-    # Autor: Julen Gaumard
-
-    ascii_desplazado = ord(letra)
-    
-    if letra.isnumeric():
-
-        ascii_desplazado += clave % 10
-
-        if ascii_desplazado > 57:
-            ascii_desplazado -= 10
-        elif ascii_desplazado < 48:
-            ascii_desplazado += 10
-
-    elif letra.islower():
-        
-        ascii_desplazado += clave % 26
-
-        if ascii_desplazado > 122:
-            ascii_desplazado -= 26
-        elif ascii_desplazado < 97:
-            ascii_desplazado += 26
-
-    elif letra.isupper():
-
-        ascii_desplazado += clave % 26
-        
-        if ascii_desplazado > 90:
-            ascii_desplazado -= 26
-        elif ascii_desplazado < 65:
-            ascii_desplazado += 26
-
-    return chr(ascii_desplazado)
-
-def cifrar_cesar(cadena, clave):
-    # Recorre toda la cadena y utilizando la funcion desplazar, encripta o desencripta toda la cadena ingresada.
-    # Autor: Julen Gaumard
-
-    cadena_cifrada = ""
-
-    for letra in cadena:
-        cadena_cifrada += desplazar(letra, clave)
-
-    return cadena_cifrada
-
-def cifrar_atbash(mensaje):
-# ALFABETOS EN MINUSCULA Y MAYUSCULA
-    alfabeto_min = "abcdefghijklmnopqrstuvwxyz"
-    alfabeto_may = alfabeto_min.upper()
-    numeros = "0123456789"
-
-# ALFABETOS INVERTIDOS
-    alfabeto_invertido_min = alfabeto_min[::-1]
-    alfabeto_invertido_may = alfabeto_may[::-1]
-    numeros_invertidos = numeros[::-1]
-
-# MENSAJE CIFRADO
-    mensaje_cifrado = ""
-
-# ITERACION PARA CIFRAR EL MENSAJE
-    for caracter in mensaje:
-    
-        if caracter in alfabeto_min:
-            mensaje_cifrado += alfabeto_invertido_may[alfabeto_min.index(caracter)]
-
-        elif caracter in alfabeto_may:
-            mensaje_cifrado += alfabeto_invertido_min[alfabeto_may.index(caracter)]
-
-        elif caracter in numeros:
-            mensaje_cifrado += numeros_invertidos[numeros.index(caracter)]
-
-        else:
-            mensaje_cifrado += caracter
-
-
-    return mensaje_cifrado
-
-#---------------------------Interfaz Grafica------------------------------
 from tkinter import * 
 from tkinter import ttk
 from tkinter import messagebox
+from cifrados import cifrar_atbash, cifrar_cesar
+from usuarios import obtener_preguntas
 
 def buscar_error_atbash(texto): 
     error = False
@@ -138,9 +59,8 @@ def boton_cesar_descifrado(texto,clave,resultado):
 def Ventana_principal():
     #--Parametros iniciales de la ventana principal--
 
-    ventana2 = crear_ventana()
-    # ventana2.config(relief="groove",bd = 10)
-
+    ventana2 = crear_ventana("TP Grupal Parte 1 - Grupo: Pala")
+    
     Frame_principal_2 = ttk.Frame(ventana2)
 
     text_var = StringVar(ventana2)
@@ -191,24 +111,76 @@ def Ventana_principal():
 
 #--------------------------Ventana de bienvenida-----------------------------
 
-def menu_screen(root):
+def next_screen(root, opcion):
     # Destruye la ventana de bienvenida y crea la ventana principal
     # Autor: Julen Gaumard
 
     root.destroy()
-    Ventana_principal()
 
-def crear_ventana():
+    if opcion == 1:
+        titulo = "Identificación para acceso"
+    else:
+        titulo = "Creacion de usuario"
+    
+    raiz_nueva = crear_ventana(titulo)
+    ventana_usuarios(raiz_nueva, opcion)
+
+    root.mainloop()
+
+
+def crear_ventana(nombre_ventana):
     # Crea una ventana generica, a la cual mediante otra funcion se le agregan los elementos necesarios
     # Autor: Julen Gaumard
 
     raiz = Tk()
     raiz.resizable(False,False)
-    raiz.title("TP Grupal Parte 1 - Grupo: Pala")
+    raiz.title(nombre_ventana)
     raiz.iconbitmap("icon.ico")
     style = ttk.Style(raiz)
     style.theme_use('vista')
     return raiz
+
+def ventana_usuarios(root, opcion):
+    # Crea la interfaz para el inicio de sesion
+    # Autor: Julen Gaumard
+
+    if opcion == 1:
+        titulo = "Iniciar Sesion"
+    else:
+        titulo = "Crear Usuario"
+
+    user_var = StringVar(root)
+    clave_var = StringVar(root)
+    opcion_var = StringVar(root)
+    respuesta_var = StringVar(root)
+
+    global_frame = ttk.Frame(root)
+
+    ttk.Label(global_frame, text= titulo, font=("Arial", 20)).grid(row=0, column=0, pady=10, sticky="w")
+    
+    ttk.Label(global_frame,text="Usuario:").grid(row=1, pady=5, sticky="w")
+    ttk.Entry(global_frame,textvariable = user_var).grid(row=2, sticky="w")
+
+    ttk.Label(global_frame,text="Clave:").grid(row=3, pady=5, sticky="w")
+    ttk.Entry(global_frame,textvariable = clave_var).grid(row=4, sticky="w")
+
+    if opcion == 2:
+        options = obtener_preguntas()
+        opcion_var.set(options[0]) 
+        
+        ttk.Label(global_frame,text="Pregunta:").grid(row=5, pady=5, sticky="w")
+        ttk.OptionMenu(global_frame, opcion_var, *options).grid(row=6, column=0, sticky="w")
+        
+        ttk.Label(global_frame,text="Respuesta:").grid(row=7, pady=5, sticky="w")
+        ttk.Entry(global_frame,textvariable = respuesta_var).grid(row=8, sticky="w")
+
+        ttk.Button(global_frame, text="Crear Usuario", ).grid(row=9, column=1, pady=10, sticky="e")
+
+    else:
+        ttk.Button(global_frame, text="Olvide Clave", ).grid(row=9, column=0, pady=10, sticky="w")
+        ttk.Button(global_frame, text="Ingresar", ).grid(row=9, column=1, pady=10, sticky="e")
+
+    global_frame.pack(padx=10)
 
 def ventana_bienvenida(root):
     # Crea la interfaz de la pantalla de bienvenida
@@ -220,7 +192,8 @@ def ventana_bienvenida(root):
     ttk.Label(global_frame,text="A la aplicación de mensajes secretos del grupo Pala.").grid(row=1, column=0, padx=5, sticky="w")
     ttk.Label(global_frame,text="Para continuar presione continuar, de lo contrario cierre la ventana.").grid(row=2, column=0, padx=5, sticky="w")
 
-    ttk.Button(global_frame, text="Continuar", command = lambda : menu_screen(root)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
+    ttk.Button(global_frame, text="Crear Usuario", command = lambda : next_screen(root, 2)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
+    ttk.Button(global_frame, text="Ingreso Usuario", command = lambda : next_screen(root, 1)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
 
     desarrollado_frame = ttk.Frame(global_frame)
     ttk.Label(desarrollado_frame,text="Construída por:", foreground="grey").grid(row=0, column=0, padx=5, sticky="w")
@@ -235,7 +208,7 @@ def ventana_bienvenida(root):
 def main():
     # Comienza la aplicacion, creando la ventana de bienvenida
     # Autor: Julen Gaumard
-    root = crear_ventana()
+    root = crear_ventana("TP Grupal Parte 1 - Grupo: Pala")
     ventana_bienvenida(root)
     root.mainloop()
 
