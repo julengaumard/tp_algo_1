@@ -152,6 +152,8 @@ def iniciar_sesion(nombre_user, clave, root):
         messagebox.showerror("Datos incompletos", "Complete los datos para continuar")
     elif not usuario: 
         messagebox.showwarning("Identificador inexistente o clave erronea", "Si no se encuentra registrado debe registrarse previamente o si olvidaste la clave presiona el botón recuperar clave")
+    elif int(usuario[4]) > 2:
+        messagebox.showerror("Atencion", "Usuario Bloqueado")
     elif usuario[1] == clave:
         root.destroy()
         Ventana_principal()
