@@ -130,6 +130,36 @@ def obtener_preguntas():
 
     return preguntas
 
+def buscar_usuario(nombre_usuario):
+
+    coincidencia = False
+
+    try:
+        with open("usuarios.csv") as ar_usuario:
+            
+            usuario = leer_linea(ar_usuario)
+
+            while usuario:
+
+                if nombre_usuario == usuario[0]:
+                    coincidencia = usuario
+
+                usuario = leer_linea(ar_usuario)
+    except:
+        pass
+
+    return coincidencia
+
+def agregar_usuario(nombre_user, clave, opcion, respuesta):
+
+    with open("usuarios.csv", "a") as ar_usuarios:
+         
+        preguntas = obtener_preguntas()
+        index_pregunta = preguntas.index(opcion)
+
+        usuario = nombre_user + "," + clave + "," + str(index_pregunta) + "," + respuesta + "\n"
+
+        ar_usuarios.write(usuario)
 
 if __name__ == "__main__":
     import doctest

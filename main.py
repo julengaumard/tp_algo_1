@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from cifrados import cifrar_atbash, cifrar_cesar
-from usuarios import obtener_preguntas
+from usuarios import obtener_preguntas, buscar_usuario, validacion_user, validacion_pass, agregar_usuario
 
 def buscar_error_atbash(texto): 
     error = False
@@ -127,6 +127,37 @@ def next_screen(root, opcion):
 
     root.mainloop()
 
+def crear_usuario(nombre_user, clave, opcion, respuesta, root):
+
+    if nombre_user == "" or clave == "" or respuesta == "":
+        messagebox.showerror("Datos incompletos", "Complete los datos para continuar")
+    elif buscar_usuario(nombre_user):
+        messagebox.showwarning("Usuario Existente", "Ya existe un usuario con ese nombre.")
+    elif not validacion_user(nombre_user):
+        messagebox.showwarning("Usuario invalido", "El nombre de usuario no es valido.")
+    elif not validacion_pass(clave):
+        messagebox.showwarning("Clave invalido", "La clave no es valida.")
+    else:
+        agregar_usuario(nombre_user, clave, opcion, respuesta)
+        root.destroy()
+        Ventana_principal()
+
+def iniciar_sesion(nombre_user, clave, root):
+    # Chequea si el usuario existe y si la clave ingresa coincide
+    # Autor: Julen Gaumard
+
+    usuario = buscar_usuario(nombre_user)
+
+    if nombre_user == "" or clave == "":
+        messagebox.showerror("Datos incompletos", "Complete los datos para continuar")
+    elif not usuario: 
+        messagebox.showwarning("Identificador inexistente o clave erronea", "Si no se encuentra registrado debe registrarse previamente o si olvidaste la clave presiona el botón recuperar clave")
+    elif usuario[1] == clave:
+        root.destroy()
+        Ventana_principal()
+    else:
+        messagebox.showwarning("Identificador inexistente o clave erronea", "Si no se encuentra registrado debe registrarse previamente o si olvidaste la clave presiona el botón recuperar clave")
+
 
 def crear_ventana(nombre_ventana):
     # Crea una ventana generica, a la cual mediante otra funcion se le agregan los elementos necesarios
@@ -156,29 +187,29 @@ def ventana_usuarios(root, opcion):
 
     global_frame = ttk.Frame(root)
 
-    ttk.Label(global_frame, text= titulo, font=("Arial", 20)).grid(row=0, column=0, pady=10, sticky="w")
+    ttk.Label(global_frame, text= titulo, font=("Arial", 20)).grid(row=0, column=0, pady=10, sticky="w", columnspan=2)
     
-    ttk.Label(global_frame,text="Usuario:").grid(row=1, pady=5, sticky="w")
-    ttk.Entry(global_frame,textvariable = user_var).grid(row=2, sticky="w")
+    ttk.Label(global_frame,text="Usuario:").grid(row=1, column=0, pady=5, sticky="w")
+    ttk.Entry(global_frame,textvariable = user_var).grid(row=1, column=1, pady=5, sticky="e")
 
-    ttk.Label(global_frame,text="Clave:").grid(row=3, pady=5, sticky="w")
-    ttk.Entry(global_frame,textvariable = clave_var).grid(row=4, sticky="w")
+    ttk.Label(global_frame,text="Clave:").grid(row=3, column=0, pady=5, sticky="w")
+    ttk.Entry(global_frame,textvariable = clave_var, show="*").grid(row=3, column=1, pady=5, sticky="e")
 
     if opcion == 2:
         options = obtener_preguntas()
         opcion_var.set(options[0]) 
         
-        ttk.Label(global_frame,text="Pregunta:").grid(row=5, pady=5, sticky="w")
-        ttk.OptionMenu(global_frame, opcion_var, *options).grid(row=6, column=0, sticky="w")
+        ttk.Label(global_frame,text="Pregunta:").grid(row=4, column=0, pady=5, sticky="w")
+        ttk.OptionMenu(global_frame, opcion_var, *options).grid(row=4, column=1, pady=5, sticky="e")
         
-        ttk.Label(global_frame,text="Respuesta:").grid(row=7, pady=5, sticky="w")
-        ttk.Entry(global_frame,textvariable = respuesta_var).grid(row=8, sticky="w")
+        ttk.Label(global_frame,text="Respuesta:").grid(row=5, column=0, pady=5, sticky="w")
+        ttk.Entry(global_frame,textvariable = respuesta_var).grid(row=5, column=1, pady=5, sticky="e")
 
-        ttk.Button(global_frame, text="Crear Usuario", ).grid(row=9, column=1, pady=10, sticky="e")
+        ttk.Button(global_frame, text="Crear Usuario", command = lambda : crear_usuario(user_var.get(), clave_var.get(), opcion_var.get(), respuesta_var.get(), root)).grid(row=9, column=1, pady=10, sticky="e")
 
     else:
         ttk.Button(global_frame, text="Olvide Clave", ).grid(row=9, column=0, pady=10, sticky="w")
-        ttk.Button(global_frame, text="Ingresar", ).grid(row=9, column=1, pady=10, sticky="e")
+        ttk.Button(global_frame, text="Ingresar", command = lambda : iniciar_sesion(user_var.get(), clave_var.get(), root)).grid(row=9, column=1, pady=10, sticky="e")
 
     global_frame.pack(padx=10)
 
@@ -192,8 +223,10 @@ def ventana_bienvenida(root):
     ttk.Label(global_frame,text="A la aplicación de mensajes secretos del grupo Pala.").grid(row=1, column=0, padx=5, sticky="w")
     ttk.Label(global_frame,text="Para continuar presione continuar, de lo contrario cierre la ventana.").grid(row=2, column=0, padx=5, sticky="w")
 
-    ttk.Button(global_frame, text="Crear Usuario", command = lambda : next_screen(root, 2)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
-    ttk.Button(global_frame, text="Ingreso Usuario", command = lambda : next_screen(root, 1)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
+    botones_frame = ttk.Frame(global_frame)
+    ttk.Button(botones_frame, text="Crear Usuario", command = lambda : next_screen(root, 2)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
+    ttk.Button(botones_frame, text="Ingreso Usuario", command = lambda : next_screen(root, 1)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
+    botones_frame.grid(row=4, column=0, sticky="e")
 
     desarrollado_frame = ttk.Frame(global_frame)
     ttk.Label(desarrollado_frame,text="Construída por:", foreground="grey").grid(row=0, column=0, padx=5, sticky="w")
