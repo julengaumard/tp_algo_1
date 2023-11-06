@@ -233,8 +233,8 @@ def ventana_bienvenida(root):
     desarrollado_frame = ttk.Frame(global_frame)
     ttk.Label(desarrollado_frame,text="Construída por:", foreground="grey").grid(row=0, column=0, padx=5, sticky="w")
     ttk.Label(desarrollado_frame,text="Alessandro Perez", foreground="grey").grid(row=0, column=1, padx=5, sticky="w")
-    ttk.Label(desarrollado_frame,text="Guido Tiscornia", foreground="grey").grid(row=1, column=1, padx=5, sticky="w")
-    ttk.Label(desarrollado_frame,text="Julen Gaumard", foreground="grey").grid(row=2, column=1, padx=5, sticky="w")
+    ttk.Label(desarrollado_frame,text="Julen Gaumard", foreground="grey").grid(row=1, column=1, padx=5, sticky="w")
+    ttk.Label(desarrollado_frame,text="Juan Pablo Dominguez Lucia", foreground="grey").grid(row=2, column=1, padx=5, sticky="w")
     ttk.Label(desarrollado_frame,text="Tomás Aprigliano", foreground="grey").grid(row=3, column=1, padx=5, sticky="w")
     
     desarrollado_frame.grid(row=5, column=0, sticky="w", columnspan=2)

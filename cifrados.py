@@ -1,8 +1,8 @@
-def control_limite(ascii_desplazado, clave, cantidad, limite_menor, limite_mayor):
+def control_limite(ascii_desplazado, clave, cantidad, limite_menor):
 
     ascii_desplazado += clave % cantidad
 
-    if ascii_desplazado > limite_mayor:
+    if ascii_desplazado > limite_menor + cantidad - 1:
         ascii_desplazado -= cantidad
     elif ascii_desplazado < limite_menor:
         ascii_desplazado += cantidad
@@ -14,20 +14,23 @@ def desplazar(letra, clave):
     # Desplaza los caracteres a la posicion determinada por la clave. Tanto para encriptar como desencriptar
     # Autor: Julen Gaumard
 
+    LISTA_DESPLAZAR = [['a',26], ['A',26], ['0',10]]
+
     ascii_desplazado = ord(letra)
     
-    if letra.isnumeric():
+    cont = 0
+    while cont < len(LISTA_DESPLAZAR):
 
-        ascii_desplazado = control_limite(ascii_desplazado, clave, 10, 48, 57)
+        ascii_inicial = ord(LISTA_DESPLAZAR[cont][0])
+        cantidad_ascii = LISTA_DESPLAZAR[cont][1]
 
-    elif letra.islower():
-        
-        ascii_desplazado = control_limite(ascii_desplazado, clave, 26, 97, 122)
-       
-    elif letra.isupper():
+        if  ascii_inicial <= ascii_desplazado < ascii_inicial + cantidad_ascii: 
+            
+            ascii_desplazado = control_limite(ascii_desplazado, clave, cantidad_ascii, ascii_inicial)
+            cont = len(LISTA_DESPLAZAR)
 
-        ascii_desplazado = control_limite(ascii_desplazado, clave, 26, 65, 90)
-    
+        cont += 1
+
     return chr(ascii_desplazado)
 
 def cifrar_cesar(cadena, clave):
@@ -72,3 +75,31 @@ def cifrar_atbash(mensaje):
 
 
     return mensaje_cifrado
+
+def pruebas_cifrar_cesar():
+    '''
+    >>> cifrar_cesar("HOLA mundo",3)
+    'KROD pxqgr'
+    >>> cifrar_cesar("KROD pxqgr",-3)
+    'HOLA mundo'
+    >>> cifrar_cesar("$ 195",3)
+    '$ 428'
+    >>> cifrar_cesar("# 129",-3)
+    '# 896'
+    >>> cifrar_cesar("HOLA mundo #2", 81)
+    'KROD pxqgr #3'
+    >>> cifrar_cesar("333",-23)
+    '000'
+    >>> cifrar_cesar("!000",-5)
+    '!555'
+    >>> cifrar_cesar("aaZZ",-1)
+    'zzYY'
+    >>> cifrar_cesar("numero1",10)
+    'xewoby1'
+    >>> cifrar_cesar("xewoby1",-10)
+    'numero1'
+    '''
+
+if __name__ == "__main__":
+    import doctest
+    print(doctest.testmod())
