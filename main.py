@@ -339,8 +339,8 @@ def crear_ventana_botones(raiz, opcion, configuracion):
             frame_cesar.grid(row=3,column=0,sticky="w")
 
             Titulo_cesar = ttk.Label(frame_cesar,text=configuracion["ventana_mensajes"]["atbash"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w",columnspan=2)
-            boton_cifrar_cesar = ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda: boton_atbash(var_texto.get(),var_clave.get(),var_resultado,1)).grid(row=2,column=0,padx=10,pady=10)
-            boton_descifrar_cesar = ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["descifrar"],width=8,command= lambda: boton_atbash(var_texto.get(),var_clave.get(),var_resultado,2)).grid(row=2,column=1,pady=10)
+            boton_cifrar_atbash = ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda: boton_atbash(var_texto.get(),var_resultado)).grid(row=2,column=0,padx=10,pady=10)
+            boton_descifrar_atbash = ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["descifrar"],width=8,command= lambda: boton_atbash(var_texto.get(),var_resultado)).grid(row=2,column=1,pady=10)
 
             ttk.Separator(frame_mensajes, orient='horizontal').grid(row=4,pady=5)
 
@@ -365,7 +365,7 @@ def crear_ventana_botones(raiz, opcion, configuracion):
         cuadro_de_destinatario = ttk.Entry(frame_destinatario,textvariable=var_destinatario, width=20).grid(row=1,column=1,padx=5,pady=10)
 
         
-        boton_enviar = ttk.Button(frame_mensajes, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario,var_usuario,opcion,var_clave,var_resultado) ,width=12).grid(row=9,padx=10,pady=10)
+        boton_enviar = ttk.Button(frame_mensajes, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario.get(),var_usuario.get(),opcion,var_clave.get(),var_resultado.get()) ,width=12).grid(row=9,padx=10,pady=10)
         frame_mensajes.pack(padx=10)
 
 
