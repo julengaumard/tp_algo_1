@@ -1,4 +1,4 @@
-def validacion_user(cadena):
+def validacion_usuario(cadena):
     # Determina la cadena es un nombre de usuario valido.
     # Autor: Julen Gaumard
 
@@ -20,31 +20,31 @@ def validacion_user(cadena):
 
     return es_valido
 
-def pruebas_validacion_user():
+def pruebas_validacion_usuario():
     '''
-    >>> validacion_user("megauser")
+    >>> validacion_usuario("megauser")
     True
-    >>> validacion_user("me@gauser")
+    >>> validacion_usuario("me@gauser")
     False
-    >>> validacion_user("megausersuperlargo")
+    >>> validacion_usuario("megausersuperlargo")
     False
-    >>> validacion_user("user")
+    >>> validacion_usuario("user")
     False
-    >>> validacion_user("user122")
+    >>> validacion_usuario("user122")
     True
-    >>> validacion_user("USER99")
+    >>> validacion_usuario("USER99")
     True
-    >>> validacion_user("USER_1")
+    >>> validacion_usuario("USER_1")
     True
-    >>> validacion_user("Pedro-lopez")
+    >>> validacion_usuario("Pedro-lopez")
     True
-    >>> validacion_user("Juan.Miguel")
+    >>> validacion_usuario("Juan.Miguel")
     True
-    >>> validacion_user("Ju4n.Migu3l")
+    >>> validacion_usuario("Ju4n.Migu3l")
     True
     '''
 
-def validacion_pass(cadena):
+def validacion_clave(cadena):
     # Determina la cadena es una pass valida.
     # Autor: Julen Gaumard
 
@@ -83,27 +83,27 @@ def validacion_pass(cadena):
 
     return tiene_numero and tiene_mayuscula and tiene_minuscula and tiene_especiales and not repite_caracter
 
-def pruebas_validacion_pass():
+def pruebas_validacion_clave():
     '''
-    >>> validacion_pass("superlargapass")
+    >>> validacion_clave("superlargapass")
     False
-    >>> validacion_pass("Pablo1#")
+    >>> validacion_clave("Pablo1#")
     True
-    >>> validacion_pass("Pablo1@")
+    >>> validacion_clave("Pablo1@")
     False
-    >>> validacion_pass("pablo1-")
+    >>> validacion_clave("pablo1-")
     False
-    >>> validacion_pass("pass1")
+    >>> validacion_clave("pass1")
     False
-    >>> validacion_pass("Pabl1#P")
+    >>> validacion_clave("Pabl1#P")
     True
-    >>> validacion_pass("Pabl11#")
+    >>> validacion_clave("Pabl11#")
     False
-    >>> validacion_pass("Pa1bl__")
+    >>> validacion_clave("Pa1bl__")
     False
-    >>> validacion_pass("--Algo1")
+    >>> validacion_clave("--Algo1")
     False
-    >>> validacion_pass("-ALGO1")
+    >>> validacion_clave("-ALGO1")
     False
     '''
 

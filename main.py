@@ -2,7 +2,58 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from cifrados import cifrar_atbash, cifrar_cesar
-from usuarios import obtener_preguntas, buscar_usuario, validacion_user, validacion_pass, agregar_usuario
+from usuarios import obtener_preguntas, buscar_usuario, validacion_usuario, validacion_clave, agregar_usuario
+
+def cargar_configuraciones():
+    # Devuelve textos y configuraciones
+    # Autor: Julen Gaumard
+
+    predeterminados = {
+        'nombre_ventanas': {
+            'principal': "TP Grupal Parte 1 - Grupo: Pala",
+            'identificacion': "Identificación para acceso",
+            'creacion': "Creacion de usuario",
+            'cesar': "Enviar mensaje Cesar",
+            'atbash': "Enviar mensaje Atbash"
+        },
+
+        'ventana_bienvenida': {
+            'titulo': 'Bienvenido!',
+            'subtitulo': "A la aplicación de mensajes secretos del grupo Pala.",
+            'subtitulo_2':"Para continuar presione continuar, de lo contrario cierre la ventana.",
+            'desarrolladores': ["Alessandro Perez", "Julen Gaumard", "Juan Pablo Dominguez Lucia"],
+            'construida': "Construída por:",
+        },
+        
+        'errores_manejo_usuarios': {
+            'incompleto_titulo': "Datos incompletos",
+            'incompleto_texto': "Complete los datos para continuar",
+            'buscar_titulo': "Usuario Existente",
+            'buscar_texto': "Ya existe un usuario con ese nombre.",
+            'usuario_titulo': "Usuario invalido",
+            'usuario_texto': "El nombre de usuario no es valido.",
+            'clave_titulo': "Clave invalida",
+            'clave_texto': "La clave no es valida.",
+            'incorrectos_titulo': "Identificador inexistente o clave erronea",
+            'incorrectos_texto': "Si no se encuentra registrado debe registrarse previamente o si olvidaste la clave presiona el botón recuperar clave",
+            'bloquado_titulo': "Atencion",
+            'bloquado_texto': "Usuario Bloqueado",
+        },
+
+        'ventana_usuarios': {
+            'usuario': "Usuario:",
+            'clave': "Clave:",
+            'pregunta': "Pregunta:",
+            'respuesta': "Respuesta:",
+            'ingresar': "Ingreso Usuario",
+            'crear': "Crear Usuario",
+            'olvide': "Olvide Clave"
+        }
+
+    }
+
+    return predeterminados
+
 
 def buscar_error_atbash(texto): 
     error = False
@@ -116,66 +167,60 @@ def crear_ventana_principal():
 
 #--------------------------Ventana de bienvenida-----------------------------
 
-def generar_siguiente_ventana(raiz, opcion):
-    # Segun el numero de opcion, crea la ventana correspondiente.
+def generar_siguiente_ventana(raiz, opcion, configuracion):
+    # Crea la ventana correspondiente, segun la opcion recibida.
     # Autor: Julen Gaumard
 
     if opcion == 1:
         raiz.destroy()
-        titulo = "Identificación para acceso"
-
-        raiz_nueva = crear_raiz(titulo)
-        crear_ventana_usuarios(raiz_nueva, opcion)
+        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['identificacion'])
+        crear_ventana_usuarios(raiz_nueva, opcion, configuracion)
 
     elif opcion == 2:
         raiz.destroy()
-        titulo = "Creacion de usuario"
-    
-        raiz_nueva = crear_raiz(titulo)
-        crear_ventana_usuarios(raiz_nueva, opcion)
+        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['creacion'])
+        crear_ventana_usuarios(raiz_nueva, opcion, configuracion)
     
     elif opcion == 3:
-        titulo = "Enviar mensaje Cesar"
-        raiz_nueva = crear_raiz(titulo)
+        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['cesar'])
     
     elif opcion == 4:
-        titulo = "Enviar mensaje Atbash"
-        raiz_nueva = crear_raiz(titulo)
+        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['atbash'])
 
 
 
-def crear_usuario(nombre_user, clave, opcion, respuesta, raiz):
+def crear_usuario(nombre_user, clave, opcion, respuesta, raiz, configuracion):
 
     if nombre_user == "" or clave == "" or respuesta == "":
-        messagebox.showerror("Datos incompletos", "Complete los datos para continuar")
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['incompleto_titulo'], configuracion['errores_manejo_usuarios']['incompleto_texto'])
     elif buscar_usuario(nombre_user):
-        messagebox.showwarning("Usuario Existente", "Ya existe un usuario con ese nombre.")
-    elif not validacion_user(nombre_user):
-        messagebox.showwarning("Usuario invalido", "El nombre de usuario no es valido.")
-    elif not validacion_pass(clave):
-        messagebox.showwarning("Clave invalido", "La clave no es valida.")
+        messagebox.showwarning(configuracion['errores_manejo_usuarios']['buscar_titulo'], configuracion['errores_manejo_usuarios']['buscar_texto'])
+    elif not validacion_usuario(nombre_user):
+        messagebox.showwarning(configuracion['errores_manejo_usuarios']['usuario_titulo'], configuracion['errores_manejo_usuarios']['usuario_texto'])
+    elif not validacion_clave(clave):
+        messagebox.showwarning(configuracion['errores_manejo_usuarios']['clave_titulo'], configuracion['errores_manejo_usuarios']['clave_texto'])
     else:
         agregar_usuario(nombre_user, clave, opcion, respuesta)
         raiz.destroy()
         crear_ventana_principal()
 
-def iniciar_sesion(nombre_user, clave, raiz):
+def iniciar_sesion(nombre_user, clave, raiz, configuracion):
     # Chequea si el usuario existe y si la clave ingresa coincide
     # Autor: Julen Gaumard
 
     usuario = buscar_usuario(nombre_user)
 
     if nombre_user == "" or clave == "":
-        messagebox.showerror("Datos incompletos", "Complete los datos para continuar")
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['incompleto_titulo'], configuracion['errores_manejo_usuarios']['incompleto_texto'])
     elif not usuario: 
-        messagebox.showwarning("Identificador inexistente o clave erronea", "Si no se encuentra registrado debe registrarse previamente o si olvidaste la clave presiona el botón recuperar clave")
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
     elif int(usuario[4]) > 2:
-        messagebox.showerror("Atencion", "Usuario Bloqueado")
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['bloquado_titulo'], configuracion['errores_manejo_usuarios']['bloquado_texto'])
     elif usuario[1] == clave:
         raiz.destroy()
         crear_ventana_principal()
     else:
-        messagebox.showwarning("Identificador inexistente o clave erronea", "Si no se encuentra registrado debe registrarse previamente o si olvidaste la clave presiona el botón recuperar clave")
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
 
 
 def crear_raiz(nombre_ventana):
@@ -190,14 +235,14 @@ def crear_raiz(nombre_ventana):
     estilo.theme_use('vista')
     return raiz
 
-def crear_ventana_usuarios(raiz, opcion):
+def crear_ventana_usuarios(raiz, opcion, configuracion):
     # Crea la interfaz para el inicio de sesion
     # Autor: Julen Gaumard
 
     if opcion == 1:
-        titulo = "Iniciar Sesion"
+        titulo = configuracion["ventana_usuarios"]["ingresar"]
     else:
-        titulo = "Crear Usuario"
+        titulo = configuracion["ventana_usuarios"]["crear"]
 
     variable_usuario = StringVar(raiz)
     variable_clave = StringVar(raiz)
@@ -206,54 +251,53 @@ def crear_ventana_usuarios(raiz, opcion):
 
     frame_global = ttk.Frame(raiz)
 
-    ttk.Label(frame_global, text= titulo, font=("Arial", 20)).grid(row=0, column=0, pady=10, sticky="w", columnspan=2)
+    ttk.Label(frame_global, text=titulo, font=("Arial", 20)).grid(row=0, column=0, pady=10, sticky="w", columnspan=2)
     
-    ttk.Label(frame_global,text="Usuario:").grid(row=1, column=0, pady=5, sticky="w")
+    ttk.Label(frame_global,text=configuracion["ventana_usuarios"]["usuario"]).grid(row=1, column=0, pady=5, sticky="w")
     ttk.Entry(frame_global,textvariable = variable_usuario).grid(row=1, column=1, pady=5, sticky="e")
 
-    ttk.Label(frame_global,text="Clave:").grid(row=3, column=0, pady=5, sticky="w")
+    ttk.Label(frame_global,text=configuracion["ventana_usuarios"]["clave"]).grid(row=3, column=0, pady=5, sticky="w")
     ttk.Entry(frame_global,textvariable = variable_clave, show="*").grid(row=3, column=1, pady=5, sticky="e")
 
     if opcion == 2:
         opciones = obtener_preguntas()
         variable_opcion.set(opciones[0]) 
         
-        ttk.Label(frame_global,text="Pregunta:").grid(row=4, column=0, pady=5, sticky="w")
+        ttk.Label(frame_global,text=configuracion["ventana_usuarios"]["pregunta"]).grid(row=4, column=0, pady=5, sticky="w")
         ttk.OptionMenu(frame_global, variable_opcion, *opciones).grid(row=4, column=1, pady=5, sticky="e")
         
-        ttk.Label(frame_global,text="Respuesta:").grid(row=5, column=0, pady=5, sticky="w")
+        ttk.Label(frame_global,text=configuracion["ventana_usuarios"]["respuesta"]).grid(row=5, column=0, pady=5, sticky="w")
         ttk.Entry(frame_global,textvariable = variable_respuesta).grid(row=5, column=1, pady=5, sticky="e")
 
-        ttk.Button(frame_global, text="Crear Usuario", command = lambda : crear_usuario(variable_usuario.get(), variable_clave.get(), variable_opcion.get(), variable_respuesta.get(), raiz)).grid(row=9, column=1, pady=10, sticky="e")
+        ttk.Button(frame_global, text=titulo, command = lambda : crear_usuario(variable_usuario.get(), variable_clave.get(), variable_opcion.get(), variable_respuesta.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
 
     else:
-        ttk.Button(frame_global, text="Olvide Clave", ).grid(row=9, column=0, pady=10, sticky="w")
-        ttk.Button(frame_global, text="Ingresar", command = lambda : iniciar_sesion(variable_usuario.get(), variable_clave.get(), raiz)).grid(row=9, column=1, pady=10, sticky="e")
+        ttk.Button(frame_global, text=configuracion["ventana_usuarios"]["olvide"], ).grid(row=9, column=0, pady=10, sticky="w")
+        ttk.Button(frame_global, text=titulo, command = lambda : iniciar_sesion(variable_usuario.get(), variable_clave.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
 
     frame_global.pack(padx=10)
 
 
-def crear_ventana_bienvenida(raiz):
+def crear_ventana_bienvenida(raiz, configuracion):
     # Crea la interfaz de la pantalla de bienvenida
     # Autor: Julen Gaumard
 
     frame_global = ttk.Frame(raiz)
 
-    ttk.Label(frame_global,text="Bienvenido!", font=("Arial", 20)).grid(row=0, column=0, padx=5, pady=5, sticky="w")
-    ttk.Label(frame_global,text="A la aplicación de mensajes secretos del grupo Pala.").grid(row=1, column=0, padx=5, sticky="w")
-    ttk.Label(frame_global,text="Para continuar presione continuar, de lo contrario cierre la ventana.").grid(row=2, column=0, padx=5, sticky="w")
+    ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['titulo'], font=("Arial", 20)).grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['subtitulo']).grid(row=1, column=0, padx=5, sticky="w")
+    ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['subtitulo_2']).grid(row=2, column=0, padx=5, sticky="w")
 
     botones_frame = ttk.Frame(frame_global)
-    ttk.Button(botones_frame, text="Crear Usuario", command = lambda : generar_siguiente_ventana(raiz, 2)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
-    ttk.Button(botones_frame, text="Ingreso Usuario", command = lambda : generar_siguiente_ventana(raiz, 1)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 2, configuracion)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
     botones_frame.grid(row=4, column=0, sticky="e")
 
     desarrollado_frame = ttk.Frame(frame_global)
-    ttk.Label(desarrollado_frame,text="Construída por:", foreground="grey").grid(row=0, column=0, padx=5, sticky="w")
-    ttk.Label(desarrollado_frame,text="Alessandro Perez", foreground="grey").grid(row=0, column=1, padx=5, sticky="w")
-    ttk.Label(desarrollado_frame,text="Julen Gaumard", foreground="grey").grid(row=1, column=1, padx=5, sticky="w")
-    ttk.Label(desarrollado_frame,text="Juan Pablo Dominguez Lucia", foreground="grey").grid(row=2, column=1, padx=5, sticky="w")
-    
+    ttk.Label(desarrollado_frame,text=configuracion['ventana_bienvenida']['construida'], foreground="grey").grid(row=0, column=0, padx=5, sticky="w")
+    for n in range(0, len(configuracion['ventana_bienvenida']['desarrolladores'])):
+        ttk.Label(desarrollado_frame,text=configuracion['ventana_bienvenida']['desarrolladores'][n], foreground="grey").grid(row=n, column=1, padx=5, sticky="w")
+   
     desarrollado_frame.grid(row=5, column=0, sticky="w", columnspan=2)
     frame_global.pack(padx=10, pady=10)
 
@@ -262,7 +306,8 @@ def crear_ventana_bienvenida(raiz):
 def main():
     # Comienza la aplicacion, creando la ventana de bienvenida
     # Autor: Julen Gaumard
-    raiz = crear_raiz("TP Grupal Parte 1 - Grupo: Pala")
-    crear_ventana_bienvenida(raiz)
+    configuracion = cargar_configuraciones()
+    raiz = crear_raiz(configuracion['nombre_ventanas']['principal'])
+    crear_ventana_bienvenida(raiz, configuracion)
 
 main()
