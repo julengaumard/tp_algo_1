@@ -10,7 +10,7 @@ def cargar_configuraciones():
 
     predeterminados = {
         'nombre_ventanas': {
-            'principal': "TP Grupal Parte 1 - Grupo: Pala",
+            'principal': "Cifrado y envío de mensajes",
             'identificacion': "Identificación para acceso",
             'creacion': "Creacion de usuario",
             'cesar': "Enviar mensaje Cesar",
