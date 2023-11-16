@@ -1,37 +1,38 @@
-def control_limite(ascii_desplazado, clave, cantidad, limite_menor):
+def control_limite(caracter_desplazado, clave, cantidad_caracteres, limite_menor):
 
-    ascii_desplazado += clave % cantidad
+    caracter_desplazado += clave % cantidad_caracteres
 
-    if ascii_desplazado > limite_menor + cantidad - 1:
-        ascii_desplazado -= cantidad
-    elif ascii_desplazado < limite_menor:
-        ascii_desplazado += cantidad
+    if caracter_desplazado > limite_menor + cantidad_caracteres - 1:
+        caracter_desplazado -= cantidad_caracteres
+    elif caracter_desplazado < limite_menor:
+        caracter_desplazado += cantidad_caracteres
 
-    return ascii_desplazado
+    return caracter_desplazado
 
 # No considera letras con tildes
 def desplazar(letra, clave):
     # Desplaza los caracteres a la posicion determinada por la clave. Tanto para encriptar como desencriptar
     # Autor: Julen Gaumard
 
-    LISTA_DESPLAZAR = [['a',26], ['A',26], ['0',10]]
+    LISTA_DESPLAZAR = [['a','z'], ['A','Z'], ['0','9']]
 
-    ascii_desplazado = ord(letra)
+    caracter_desplazado = ord(letra)
     
     cont = 0
     while cont < len(LISTA_DESPLAZAR):
 
-        ascii_inicial = ord(LISTA_DESPLAZAR[cont][0])
-        cantidad_ascii = LISTA_DESPLAZAR[cont][1]
+        caracter_inicial = ord(LISTA_DESPLAZAR[cont][0])
+        caracter_final = ord(LISTA_DESPLAZAR[cont][1])
+        cantidad_caracteres = caracter_final - caracter_inicial + 1
 
-        if  ascii_inicial <= ascii_desplazado < ascii_inicial + cantidad_ascii: 
+        if  caracter_inicial <= caracter_desplazado <= caracter_final: 
             
-            ascii_desplazado = control_limite(ascii_desplazado, clave, cantidad_ascii, ascii_inicial)
+            caracter_desplazado = control_limite(caracter_desplazado, clave, cantidad_caracteres, caracter_inicial)
             cont = len(LISTA_DESPLAZAR)
 
         cont += 1
 
-    return chr(ascii_desplazado)
+    return chr(caracter_desplazado)
 
 def cifrar_cesar(cadena, clave):
     # Recorre toda la cadena y utilizando la funcion desplazar, encripta o desencripta toda la cadena ingresada.

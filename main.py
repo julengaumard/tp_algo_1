@@ -55,7 +55,7 @@ def boton_cesar_cifrado(texto,clave,resultado,boton):
 #Se ejecuta al presionar el boton de descifrado Cesar
 
 #--------------------------Ventana principal-----------------------------
-def Ventana_principal():
+def crear_ventana_principal():
     #Parametros iniciales de la ventana principal
 
     Ventana = crear_raiz("Cifrado y envío de mensajes")
@@ -116,7 +116,7 @@ def Ventana_principal():
 
 #--------------------------Ventana de bienvenida-----------------------------
 
-def next_screen(raiz, opcion):
+def generar_siguiente_ventana(raiz, opcion):
     # Segun el numero de opcion, crea la ventana correspondiente.
     # Autor: Julen Gaumard
 
@@ -125,14 +125,14 @@ def next_screen(raiz, opcion):
         titulo = "Identificación para acceso"
 
         raiz_nueva = crear_raiz(titulo)
-        ventana_usuarios(raiz_nueva, opcion)
+        crear_ventana_usuarios(raiz_nueva, opcion)
 
     elif opcion == 2:
         raiz.destroy()
         titulo = "Creacion de usuario"
     
         raiz_nueva = crear_raiz(titulo)
-        ventana_usuarios(raiz_nueva, opcion)
+        crear_ventana_usuarios(raiz_nueva, opcion)
     
     elif opcion == 3:
         titulo = "Enviar mensaje Cesar"
@@ -157,7 +157,7 @@ def crear_usuario(nombre_user, clave, opcion, respuesta, raiz):
     else:
         agregar_usuario(nombre_user, clave, opcion, respuesta)
         raiz.destroy()
-        Ventana_principal()
+        crear_ventana_principal()
 
 def iniciar_sesion(nombre_user, clave, raiz):
     # Chequea si el usuario existe y si la clave ingresa coincide
@@ -173,7 +173,7 @@ def iniciar_sesion(nombre_user, clave, raiz):
         messagebox.showerror("Atencion", "Usuario Bloqueado")
     elif usuario[1] == clave:
         raiz.destroy()
-        Ventana_principal()
+        crear_ventana_principal()
     else:
         messagebox.showwarning("Identificador inexistente o clave erronea", "Si no se encuentra registrado debe registrarse previamente o si olvidaste la clave presiona el botón recuperar clave")
 
@@ -190,7 +190,7 @@ def crear_raiz(nombre_ventana):
     estilo.theme_use('vista')
     return raiz
 
-def ventana_usuarios(raiz, opcion):
+def crear_ventana_usuarios(raiz, opcion):
     # Crea la interfaz para el inicio de sesion
     # Autor: Julen Gaumard
 
@@ -199,41 +199,41 @@ def ventana_usuarios(raiz, opcion):
     else:
         titulo = "Crear Usuario"
 
-    user_var = StringVar(raiz)
-    clave_var = StringVar(raiz)
-    opcion_var = StringVar(raiz)
-    respuesta_var = StringVar(raiz)
+    variable_usuario = StringVar(raiz)
+    variable_clave = StringVar(raiz)
+    variable_opcion = StringVar(raiz)
+    variable_respuesta = StringVar(raiz)
 
     frame_global = ttk.Frame(raiz)
 
     ttk.Label(frame_global, text= titulo, font=("Arial", 20)).grid(row=0, column=0, pady=10, sticky="w", columnspan=2)
     
     ttk.Label(frame_global,text="Usuario:").grid(row=1, column=0, pady=5, sticky="w")
-    ttk.Entry(frame_global,textvariable = user_var).grid(row=1, column=1, pady=5, sticky="e")
+    ttk.Entry(frame_global,textvariable = variable_usuario).grid(row=1, column=1, pady=5, sticky="e")
 
     ttk.Label(frame_global,text="Clave:").grid(row=3, column=0, pady=5, sticky="w")
-    ttk.Entry(frame_global,textvariable = clave_var, show="*").grid(row=3, column=1, pady=5, sticky="e")
+    ttk.Entry(frame_global,textvariable = variable_clave, show="*").grid(row=3, column=1, pady=5, sticky="e")
 
     if opcion == 2:
         opciones = obtener_preguntas()
-        opcion_var.set(opciones[0]) 
+        variable_opcion.set(opciones[0]) 
         
         ttk.Label(frame_global,text="Pregunta:").grid(row=4, column=0, pady=5, sticky="w")
-        ttk.OptionMenu(frame_global, opcion_var, *opciones).grid(row=4, column=1, pady=5, sticky="e")
+        ttk.OptionMenu(frame_global, variable_opcion, *opciones).grid(row=4, column=1, pady=5, sticky="e")
         
         ttk.Label(frame_global,text="Respuesta:").grid(row=5, column=0, pady=5, sticky="w")
-        ttk.Entry(frame_global,textvariable = respuesta_var).grid(row=5, column=1, pady=5, sticky="e")
+        ttk.Entry(frame_global,textvariable = variable_respuesta).grid(row=5, column=1, pady=5, sticky="e")
 
-        ttk.Button(frame_global, text="Crear Usuario", command = lambda : crear_usuario(user_var.get(), clave_var.get(), opcion_var.get(), respuesta_var.get(), raiz)).grid(row=9, column=1, pady=10, sticky="e")
+        ttk.Button(frame_global, text="Crear Usuario", command = lambda : crear_usuario(variable_usuario.get(), variable_clave.get(), variable_opcion.get(), variable_respuesta.get(), raiz)).grid(row=9, column=1, pady=10, sticky="e")
 
     else:
         ttk.Button(frame_global, text="Olvide Clave", ).grid(row=9, column=0, pady=10, sticky="w")
-        ttk.Button(frame_global, text="Ingresar", command = lambda : iniciar_sesion(user_var.get(), clave_var.get(), raiz)).grid(row=9, column=1, pady=10, sticky="e")
+        ttk.Button(frame_global, text="Ingresar", command = lambda : iniciar_sesion(variable_usuario.get(), variable_clave.get(), raiz)).grid(row=9, column=1, pady=10, sticky="e")
 
     frame_global.pack(padx=10)
 
 
-def ventana_bienvenida(raiz):
+def crear_ventana_bienvenida(raiz):
     # Crea la interfaz de la pantalla de bienvenida
     # Autor: Julen Gaumard
 
@@ -244,8 +244,8 @@ def ventana_bienvenida(raiz):
     ttk.Label(frame_global,text="Para continuar presione continuar, de lo contrario cierre la ventana.").grid(row=2, column=0, padx=5, sticky="w")
 
     botones_frame = ttk.Frame(frame_global)
-    ttk.Button(botones_frame, text="Crear Usuario", command = lambda : next_screen(raiz, 2)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
-    ttk.Button(botones_frame, text="Ingreso Usuario", command = lambda : next_screen(raiz, 1)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
+    ttk.Button(botones_frame, text="Crear Usuario", command = lambda : generar_siguiente_ventana(raiz, 2)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
+    ttk.Button(botones_frame, text="Ingreso Usuario", command = lambda : generar_siguiente_ventana(raiz, 1)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
     botones_frame.grid(row=4, column=0, sticky="e")
 
     desarrollado_frame = ttk.Frame(frame_global)
@@ -263,6 +263,6 @@ def main():
     # Comienza la aplicacion, creando la ventana de bienvenida
     # Autor: Julen Gaumard
     raiz = crear_raiz("TP Grupal Parte 1 - Grupo: Pala")
-    ventana_bienvenida(raiz)
+    crear_ventana_bienvenida(raiz)
 
 main()

@@ -150,14 +150,14 @@ def buscar_usuario(nombre_usuario):
 
     return coincidencia
 
-def agregar_usuario(nombre_user, clave, opcion, respuesta):
+def agregar_usuario(nombre_usuario, clave, opcion, respuesta):
 
     with open("usuarios.csv", "a") as ar_usuarios:
          
         preguntas = obtener_preguntas()
-        index_pregunta = preguntas.index(opcion)
+        indice_pregunta = preguntas.index(opcion)
 
-        usuario = nombre_user + "," + clave + "," + str(index_pregunta) + "," + respuesta + "\n"
+        usuario = nombre_usuario + "," + clave + "," + str(indice_pregunta) + "," + respuesta + "\n"
 
         ar_usuarios.write(usuario)
 
