@@ -5,8 +5,6 @@ Trabajo Practico Algoritomos 1
 Integrantes:
    Alessandro Perez
    Guido Tiscornia
-   Julen Gaumard
-   Tomás Aprigliano
-
+   Dominguez Lucia Juan Pablo
 Github:
     https://github.com/julengaumard/tp_algo_1
