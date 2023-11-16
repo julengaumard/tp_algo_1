@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from cifrados import cifrar_atbash, cifrar_cesar
+from botones_cifrado import boton_atbash, boton_cesar,buscar_error_atbash,buscar_error_cesar
 from usuarios import obtener_preguntas, buscar_usuario, validacion_usuario, validacion_clave, agregar_usuario
 from mensajes import enviar_mensaje
 
@@ -48,7 +49,6 @@ def cargar_configuraciones():
             'enviar' : "Enviar "
 
         },
-    
         
         'errores_manejo_usuarios': {
             'incompleto_titulo': "Datos incompletos",
@@ -80,56 +80,6 @@ def cargar_configuraciones():
 
     return predeterminados
 
-
-def buscar_error_atbash(texto): 
-    error = False
-    if texto == "":
-        messagebox.showerror("Datos incompletos","Debes ingresar un texto y una clave")
-        error = True
-
-    return error
-
-def buscar_error_cesar(texto,clave): 
-    error = False
-    if texto == "" and clave == "":
-        messagebox.showerror("Datos incompletos","Debes ingresar un texto y una clave")
-        error = True
-    elif texto == "" and clave != "":
-        messagebox.showerror("Datos incompletos","Debes ingresar un texto")
-        error = True
-    elif texto != "" and clave == "":
-        messagebox.showerror("Datos incompletos","Debes ingresar una clave")
-        error = True
-    elif not clave.isnumeric():
-        messagebox.showerror("Datos incorrectos","la clave debe ser numerica")
-        error = True
-    return error
-    
-#Se ejecuta al presionar el boton de cifrado y descrifrado atbash
-def boton_atbash(texto,resultado):
-    error = buscar_error_atbash(texto)
-    if error == False:
-        cifrar = cifrar_atbash(texto)
-
-        resultado.set(cifrar)
-
-#Se ejecuta al presionar el boton de cifrado Cesar
-def boton_cesar(texto,clave,resultado,boton):
-
-    error = buscar_error_cesar(texto,clave)
-    if error == False:
-        if boton == 1:
-            cifrar = cifrar_cesar(texto,int(clave))
-
-            resultado.set(cifrar)
-
-        elif boton == 2:
-            negativo = -int(clave)
-            cifrar = cifrar_cesar(texto,negativo)
-
-            resultado.set(cifrar)
-
-#Se ejecuta al presionar el boton de descifrado Cesar
 
 #--------------------------Ventana principal-----------------------------
 def crear_ventana_principal(configuracion,usuario_ingresado):
