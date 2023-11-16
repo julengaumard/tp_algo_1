@@ -132,7 +132,7 @@ def boton_cesar(texto,clave,resultado,boton):
 #Se ejecuta al presionar el boton de descifrado Cesar
 
 #--------------------------Ventana principal-----------------------------
-def crear_ventana_principal(configuracion):
+def crear_ventana_principal(configuracion,usuario_ingresado):
     # Autor: Dominguez Lucia Juan Pablo
     #Parametros iniciales de la ventana principal
 
@@ -185,8 +185,8 @@ def crear_ventana_principal(configuracion):
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=9,pady=5)
 
     #Envio de mensajes
-    Envio_cifrado_cesar = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_cesar"],command= lambda :generar_siguiente_ventana("", 3, configuracion),width=30).grid(row=10,padx=10,pady=5)
-    Envio_cifrado_atbash = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_atbash"],command= lambda :generar_siguiente_ventana("", 4, configuracion), width=30).grid(row=11,padx=10,pady=5)
+    Envio_cifrado_cesar = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_cesar"],command= lambda :generar_siguiente_ventana("", 3, configuracion,usuario_ingresado),width=30).grid(row=10,padx=10,pady=5)
+    Envio_cifrado_atbash = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_atbash"],command= lambda :generar_siguiente_ventana("", 4, configuracion,usuario_ingresado), width=30).grid(row=11,padx=10,pady=5)
  
     Frame_principal.pack(padx=10, pady=10)
     Ventana.mainloop()
@@ -194,27 +194,27 @@ def crear_ventana_principal(configuracion):
 
 #--------------------------Ventana de bienvenida-----------------------------
 
-def generar_siguiente_ventana(raiz, opcion, configuracion):
+def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
     # Crea la ventana correspondiente, segun la opcion recibida.
     # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
 
     if opcion == 1:
         raiz.destroy()
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['identificacion'])
-        crear_ventana_botones(raiz_nueva, opcion, configuracion)
+        crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
 
     elif opcion == 2:
         raiz.destroy()
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['creacion'])
-        crear_ventana_botones(raiz_nueva, opcion, configuracion)
+        crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
     
     elif opcion == 3:
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['cesar'])
-        crear_ventana_botones(raiz_nueva, opcion, configuracion)
+        crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
     
     elif opcion == 4:
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['atbash'])
-        crear_ventana_botones(raiz_nueva, opcion, configuracion)
+        crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
 
 
 def crear_usuario(nombre_user, clave, opcion, respuesta, raiz, configuracion):
@@ -246,7 +246,7 @@ def iniciar_sesion(nombre_user, clave, raiz, configuracion):
         messagebox.showerror(configuracion['errores_manejo_usuarios']['bloquado_titulo'], configuracion['errores_manejo_usuarios']['bloquado_texto'])
     elif usuario[1] == clave:
         raiz.destroy()
-        crear_ventana_principal(configuracion)
+        crear_ventana_principal(configuracion,nombre_user)
     else:
         messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
 
@@ -264,11 +264,10 @@ def crear_raiz(nombre_ventana):
     return raiz
 
 
-def crear_ventana_botones(raiz, opcion, configuracion):
+def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
     # Crea la interfaz dependiente del boton presionado
     # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
 
-    var_usuario = StringVar(raiz)
 
     if opcion < 3:
         frame_usuarios = ttk.Frame(raiz)
@@ -276,6 +275,7 @@ def crear_ventana_botones(raiz, opcion, configuracion):
         var_clave = StringVar(raiz)
         var_opcion = StringVar(raiz)
         var_respuesta = StringVar(raiz)
+        var_usuario = StringVar(raiz)
 
         ttk.Label(frame_usuarios, text=configuracion["ventana_usuarios"]["ingresar"], font=("Arial", 20)).grid(row=0, column=0, pady=10, sticky="w", columnspan=2)
         
@@ -307,7 +307,7 @@ def crear_ventana_botones(raiz, opcion, configuracion):
     else:
         
         frame_mensajes = ttk.Frame(raiz)
-
+        var_usuario = usuario_ingresado
         var_destinatario = StringVar(raiz)
         var_texto = StringVar(raiz)
         var_clave = StringVar(raiz)
@@ -365,7 +365,7 @@ def crear_ventana_botones(raiz, opcion, configuracion):
         cuadro_de_destinatario = ttk.Entry(frame_destinatario,textvariable=var_destinatario, width=20).grid(row=1,column=1,padx=5,pady=10)
 
         
-        boton_enviar = ttk.Button(frame_mensajes, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario.get(),var_usuario.get(),opcion,var_clave.get(),var_resultado.get()) ,width=12).grid(row=9,padx=10,pady=10)
+        boton_enviar = ttk.Button(frame_mensajes, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario.get(),var_usuario,opcion,var_clave.get(),var_resultado.get()) ,width=12).grid(row=9,padx=10,pady=10)
         frame_mensajes.pack(padx=10)
 
 
@@ -380,8 +380,8 @@ def crear_ventana_bienvenida(raiz, configuracion):
     ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['subtitulo_2']).grid(row=2, column=0, padx=5, sticky="w")
 
     botones_frame = ttk.Frame(frame_global)
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 2, configuracion)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 2, configuracion,"")).grid(row=3, column=0, padx=5, pady=10, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion,"")).grid(row=3, column=1, padx=5, pady=10, sticky="e")
     botones_frame.grid(row=4, column=0, sticky="e")
 
     desarrollado_frame = ttk.Frame(frame_global)

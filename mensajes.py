@@ -7,7 +7,10 @@ def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
     usuario = buscar_usuario(destinatario)
 
     if not usuario:
-        
+
+        messagebox.showerror("Datos incorrentos","El usuario no existe")
+
+    else:
         with open('mensajes.csv', 'a') as ar_mensajes:
                     
             if cifrado == 3:
@@ -22,7 +25,4 @@ def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
                 mensaje = destinatario + "," + remitente + "," + cifrado + "," + mensaje_cifrado + "\n" 
                 
             ar_mensajes.write(mensaje)
-
-    else:
-        messagebox.showerror("Datos incorrentos","El usuario no existe")
 
