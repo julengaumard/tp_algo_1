@@ -37,97 +37,114 @@ def boton_atbash(texto,resultado):
         resultado.set(cifrar)
 
 #Se ejecuta al presionar el boton de cifrado Cesar
-def boton_cesar_cifrado(texto,clave,resultado):
+def boton_cesar_cifrado(texto,clave,resultado,boton):
+
     error = buscar_error_cesar(texto,clave)
     if error == False:
-        cifrar = cifrar_cesar(texto,int(clave))
+        if boton == 1:
+            cifrar = cifrar_cesar(texto,int(clave))
 
-        resultado.set(cifrar)
+            resultado.set(cifrar)
+
+        elif boton == 2:
+            negativo = -int(clave)
+            cifrar = cifrar_cesar(texto,negativo)
+
+            resultado.set(cifrar)
 
 #Se ejecuta al presionar el boton de descifrado Cesar
 
-def boton_cesar_descifrado(texto,clave,resultado):
-    error = buscar_error_cesar(texto,clave)
-    if error == False:
-        negativo = -int(clave)
-        cifrar = cifrar_cesar(texto,negativo)
-
-        resultado.set(cifrar)
-
-
 #--------------------------Ventana principal-----------------------------
 def Ventana_principal():
-    #--Parametros iniciales de la ventana principal--
+    #Parametros iniciales de la ventana principal
 
-    ventana2 = crear_ventana("TP Grupal Parte 1 - Grupo: Pala")
+    Ventana = crear_raiz("Cifrado y envío de mensajes")
     
-    Frame_principal_2 = ttk.Frame(ventana2)
+    Frame_principal = ttk.Frame(Ventana)
 
-    text_var = StringVar(ventana2)
-    result_var = StringVar(ventana2)
-    clave_var = StringVar(ventana2)
+    var_texto = StringVar(Ventana)
+    var_resultado = StringVar(Ventana)
+    var_clave = StringVar(Ventana)
 
-    #--Contenido de la ventana principal--
+    Ingreso_mensaje = ttk.Label(Frame_principal,text="\nIngrese mesaje para decifrar:", font= ("bahnschrift",14,"underline")).grid(row=0,sticky = "w")
+    cuadro_de_ingreso_mensaje = ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=1,column=0,padx=5,pady=10)
 
-    Ingreso_mensaje = ttk.Label(Frame_principal_2,text="\nIngrese mesaje para decifrar:", font= ("bahnschrift",14,"underline")).grid(row=0,sticky = "w")
-    cuadro_de_ingreso_mensaje = ttk.Entry(Frame_principal_2,textvariable=text_var, width=50).grid(row=1,column=0,padx=5,pady=10)
-
-    ttk.Separator(Frame_principal_2, orient='horizontal').grid(row=3,pady=10)
+    ttk.Separator(Frame_principal, orient='horizontal').grid(row=3,pady=10)
 
     #Apartado para el cifrado cesar
 
-    frame_cesar = ttk.Frame(Frame_principal_2)
+    frame_cesar = ttk.Frame(Frame_principal)
     frame_cesar.grid(row=4,column=0,sticky="w")
 
 
     Titulo_cesar = ttk.Label(frame_cesar,text="Cifrado cesar", font= ("bahnschrift",11,"underline")).grid(row=1,sticky = "w",columnspan=2)
     texto_aclaracion = ttk.Label(frame_cesar,text="Clave:", font= ("bahnschrift",10)).grid(row=2,sticky = "w",padx=10,pady=10)
-    cuadro_de_ingreso_clave = ttk.Entry(frame_cesar,width=10,textvariable= clave_var).grid(row=2,column=1,pady=10)
-    boton_cifrar_cesar = ttk.Button(frame_cesar, text="Cifrar",width=8,command= lambda: boton_cesar_cifrado(text_var.get(),clave_var.get(),result_var)).grid(row=2,column=2,padx=10,pady=10)
-    boton_descifrar_cesar = ttk.Button(frame_cesar, text="Descifrar",width=8,command= lambda: boton_cesar_descifrado(text_var.get(),clave_var.get(),result_var)).grid(row=2,column=3,pady=10)
+    cuadro_de_ingreso_clave = ttk.Entry(frame_cesar,width=10,textvariable= var_clave).grid(row=2,column=1,pady=10)
+    boton_cifrar_cesar = ttk.Button(frame_cesar, text="Cifrar",width=8,command= lambda: boton_cesar_cifrado(var_texto.get(),var_clave.get(),var_resultado,1)).grid(row=2,column=2,padx=10,pady=10)
+    boton_descifrar_cesar = ttk.Button(frame_cesar, text="Descifrar",width=8,command= lambda: boton_cesar_cifrado(var_texto.get(),var_clave.get(),var_resultado,2)).grid(row=2,column=3,pady=10)
 
-    ttk.Separator(Frame_principal_2, orient='horizontal').grid(row=5,pady=10)
+    ttk.Separator(Frame_principal, orient='horizontal').grid(row=5,pady=10)
 
     #Apartado para el cifrado atbash
 
-    frame_atbash = ttk.Frame(Frame_principal_2)
+    frame_atbash = ttk.Frame(Frame_principal)
     frame_atbash.grid(row=6,column=0,sticky="w")
 
     Titulo_atbash = ttk.Label(frame_atbash,text="Cifrado atbash", font= ("bahnschrift",11,"underline")).grid(row=1,sticky = "w",columnspan=2)
-    boton_cifrar_atbash = ttk.Button(frame_atbash, text="Cifrar",width=8,command= lambda : boton_atbash(text_var.get(),result_var)).grid(row=2,column=0,padx=10,pady=10)
-    boton_descifrar_atbash = ttk.Button(frame_atbash, text="Descifrar",width=8,command= lambda : boton_atbash(text_var.get(),result_var)).grid(row=2,column=1,pady=10)
+    boton_cifrar_atbash = ttk.Button(frame_atbash, text="Cifrar",width=8,command= lambda : boton_atbash(var_texto.get(),var_resultado)).grid(row=2,column=0,padx=10,pady=10)
+    boton_descifrar_atbash = ttk.Button(frame_atbash, text="Descifrar",width=8,command= lambda : boton_atbash(var_texto.get(),var_resultado)).grid(row=2,column=1,pady=10)
 
-    ttk.Separator(Frame_principal_2, orient='horizontal').grid(row=7,pady=10)
+    ttk.Separator(Frame_principal, orient='horizontal').grid(row=7,pady=10)
 
     #Apartado para el Resultado
-    Titulo_resultado = ttk.Label(Frame_principal_2,text="Resultado:", font= ("bahnschrift",14,"underline")).grid(row=8,sticky = "w")
-    Resultado = ttk.Label(Frame_principal_2, font=("bahnschrift", 10), textvariable = result_var).grid(row=9, column=0, padx = 10, pady=5, sticky="w") 
-    result_var.set("El resultado se mostrara aqui.")
+    frame_resul = ttk.Frame(Frame_principal)
+    frame_resul.grid(row=8,column=0,sticky="w")
 
-    Frame_principal_2.pack(padx=10, pady=10)
+    Titulo_resultado = ttk.Label(frame_resul,text="Resultado:", font= ("bahnschrift",14,"underline")).grid(row=0,sticky = "w")
+    Resultado = ttk.Label(frame_resul, font=("bahnschrift", 10), textvariable = var_resultado).grid(row=1, column=0, padx = 10, pady=5, sticky="w") 
+    var_resultado.set("El resultado se mostrara aqui.")
 
-    ventana2.mainloop()
+    ttk.Separator(Frame_principal, orient='horizontal').grid(row=9,pady=5)
+
+    #Envio de mensajes
+    Envio_cifrado_cesar = ttk.Button(Frame_principal,text="Enviar mensaje Cifrado Cesar",width=30).grid(row=10,padx=10,pady=5)
+    Envio_cifrado_atbash= ttk.Button(Frame_principal,text="Enviar mensaje Cifrado Atbash",width=30).grid(row=11,padx=10,pady=5)
+
+    Frame_principal.pack(padx=10, pady=10)
+    Ventana.mainloop()
 
 
 #--------------------------Ventana de bienvenida-----------------------------
 
-def next_screen(root, opcion):
-    # Destruye la ventana de bienvenida y crea la ventana principal
+def next_screen(raiz, opcion):
+    # Segun el numero de opcion, crea la ventana correspondiente.
     # Autor: Julen Gaumard
 
-    root.destroy()
-
     if opcion == 1:
+        raiz.destroy()
         titulo = "Identificación para acceso"
-    else:
+
+        raiz_nueva = crear_raiz(titulo)
+        ventana_usuarios(raiz_nueva, opcion)
+
+    elif opcion == 2:
+        raiz.destroy()
         titulo = "Creacion de usuario"
     
-    raiz_nueva = crear_ventana(titulo)
-    ventana_usuarios(raiz_nueva, opcion)
+        raiz_nueva = crear_raiz(titulo)
+        ventana_usuarios(raiz_nueva, opcion)
+    
+    elif opcion == 3:
+        titulo = "Enviar mensaje Cesar"
+        raiz_nueva = crear_raiz(titulo)
+    
+    elif opcion == 4:
+        titulo = "Enviar mensaje Atbash"
+        raiz_nueva = crear_raiz(titulo)
 
-    root.mainloop()
 
-def crear_usuario(nombre_user, clave, opcion, respuesta, root):
+
+def crear_usuario(nombre_user, clave, opcion, respuesta, raiz):
 
     if nombre_user == "" or clave == "" or respuesta == "":
         messagebox.showerror("Datos incompletos", "Complete los datos para continuar")
@@ -139,10 +156,10 @@ def crear_usuario(nombre_user, clave, opcion, respuesta, root):
         messagebox.showwarning("Clave invalido", "La clave no es valida.")
     else:
         agregar_usuario(nombre_user, clave, opcion, respuesta)
-        root.destroy()
+        raiz.destroy()
         Ventana_principal()
 
-def iniciar_sesion(nombre_user, clave, root):
+def iniciar_sesion(nombre_user, clave, raiz):
     # Chequea si el usuario existe y si la clave ingresa coincide
     # Autor: Julen Gaumard
 
@@ -155,13 +172,13 @@ def iniciar_sesion(nombre_user, clave, root):
     elif int(usuario[4]) > 2:
         messagebox.showerror("Atencion", "Usuario Bloqueado")
     elif usuario[1] == clave:
-        root.destroy()
+        raiz.destroy()
         Ventana_principal()
     else:
         messagebox.showwarning("Identificador inexistente o clave erronea", "Si no se encuentra registrado debe registrarse previamente o si olvidaste la clave presiona el botón recuperar clave")
 
 
-def crear_ventana(nombre_ventana):
+def crear_raiz(nombre_ventana):
     # Crea una ventana generica, a la cual mediante otra funcion se le agregan los elementos necesarios
     # Autor: Julen Gaumard
 
@@ -169,11 +186,11 @@ def crear_ventana(nombre_ventana):
     raiz.resizable(False,False)
     raiz.title(nombre_ventana)
     raiz.iconbitmap("icon.ico")
-    style = ttk.Style(raiz)
-    style.theme_use('vista')
+    estilo = ttk.Style(raiz)
+    estilo.theme_use('vista')
     return raiz
 
-def ventana_usuarios(root, opcion):
+def ventana_usuarios(raiz, opcion):
     # Crea la interfaz para el inicio de sesion
     # Autor: Julen Gaumard
 
@@ -182,69 +199,70 @@ def ventana_usuarios(root, opcion):
     else:
         titulo = "Crear Usuario"
 
-    user_var = StringVar(root)
-    clave_var = StringVar(root)
-    opcion_var = StringVar(root)
-    respuesta_var = StringVar(root)
+    user_var = StringVar(raiz)
+    clave_var = StringVar(raiz)
+    opcion_var = StringVar(raiz)
+    respuesta_var = StringVar(raiz)
 
-    global_frame = ttk.Frame(root)
+    frame_global = ttk.Frame(raiz)
 
-    ttk.Label(global_frame, text= titulo, font=("Arial", 20)).grid(row=0, column=0, pady=10, sticky="w", columnspan=2)
+    ttk.Label(frame_global, text= titulo, font=("Arial", 20)).grid(row=0, column=0, pady=10, sticky="w", columnspan=2)
     
-    ttk.Label(global_frame,text="Usuario:").grid(row=1, column=0, pady=5, sticky="w")
-    ttk.Entry(global_frame,textvariable = user_var).grid(row=1, column=1, pady=5, sticky="e")
+    ttk.Label(frame_global,text="Usuario:").grid(row=1, column=0, pady=5, sticky="w")
+    ttk.Entry(frame_global,textvariable = user_var).grid(row=1, column=1, pady=5, sticky="e")
 
-    ttk.Label(global_frame,text="Clave:").grid(row=3, column=0, pady=5, sticky="w")
-    ttk.Entry(global_frame,textvariable = clave_var, show="*").grid(row=3, column=1, pady=5, sticky="e")
+    ttk.Label(frame_global,text="Clave:").grid(row=3, column=0, pady=5, sticky="w")
+    ttk.Entry(frame_global,textvariable = clave_var, show="*").grid(row=3, column=1, pady=5, sticky="e")
 
     if opcion == 2:
-        options = obtener_preguntas()
-        opcion_var.set(options[0]) 
+        opciones = obtener_preguntas()
+        opcion_var.set(opciones[0]) 
         
-        ttk.Label(global_frame,text="Pregunta:").grid(row=4, column=0, pady=5, sticky="w")
-        ttk.OptionMenu(global_frame, opcion_var, *options).grid(row=4, column=1, pady=5, sticky="e")
+        ttk.Label(frame_global,text="Pregunta:").grid(row=4, column=0, pady=5, sticky="w")
+        ttk.OptionMenu(frame_global, opcion_var, *opciones).grid(row=4, column=1, pady=5, sticky="e")
         
-        ttk.Label(global_frame,text="Respuesta:").grid(row=5, column=0, pady=5, sticky="w")
-        ttk.Entry(global_frame,textvariable = respuesta_var).grid(row=5, column=1, pady=5, sticky="e")
+        ttk.Label(frame_global,text="Respuesta:").grid(row=5, column=0, pady=5, sticky="w")
+        ttk.Entry(frame_global,textvariable = respuesta_var).grid(row=5, column=1, pady=5, sticky="e")
 
-        ttk.Button(global_frame, text="Crear Usuario", command = lambda : crear_usuario(user_var.get(), clave_var.get(), opcion_var.get(), respuesta_var.get(), root)).grid(row=9, column=1, pady=10, sticky="e")
+        ttk.Button(frame_global, text="Crear Usuario", command = lambda : crear_usuario(user_var.get(), clave_var.get(), opcion_var.get(), respuesta_var.get(), raiz)).grid(row=9, column=1, pady=10, sticky="e")
 
     else:
-        ttk.Button(global_frame, text="Olvide Clave", ).grid(row=9, column=0, pady=10, sticky="w")
-        ttk.Button(global_frame, text="Ingresar", command = lambda : iniciar_sesion(user_var.get(), clave_var.get(), root)).grid(row=9, column=1, pady=10, sticky="e")
+        ttk.Button(frame_global, text="Olvide Clave", ).grid(row=9, column=0, pady=10, sticky="w")
+        ttk.Button(frame_global, text="Ingresar", command = lambda : iniciar_sesion(user_var.get(), clave_var.get(), raiz)).grid(row=9, column=1, pady=10, sticky="e")
 
-    global_frame.pack(padx=10)
+    frame_global.pack(padx=10)
 
-def ventana_bienvenida(root):
+
+def ventana_bienvenida(raiz):
     # Crea la interfaz de la pantalla de bienvenida
     # Autor: Julen Gaumard
 
-    global_frame = ttk.Frame(root)
+    frame_global = ttk.Frame(raiz)
 
-    ttk.Label(global_frame,text="Bienvenido!", font=("Arial", 20)).grid(row=0, column=0, padx=5, pady=5, sticky="w")
-    ttk.Label(global_frame,text="A la aplicación de mensajes secretos del grupo Pala.").grid(row=1, column=0, padx=5, sticky="w")
-    ttk.Label(global_frame,text="Para continuar presione continuar, de lo contrario cierre la ventana.").grid(row=2, column=0, padx=5, sticky="w")
+    ttk.Label(frame_global,text="Bienvenido!", font=("Arial", 20)).grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    ttk.Label(frame_global,text="A la aplicación de mensajes secretos del grupo Pala.").grid(row=1, column=0, padx=5, sticky="w")
+    ttk.Label(frame_global,text="Para continuar presione continuar, de lo contrario cierre la ventana.").grid(row=2, column=0, padx=5, sticky="w")
 
-    botones_frame = ttk.Frame(global_frame)
-    ttk.Button(botones_frame, text="Crear Usuario", command = lambda : next_screen(root, 2)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
-    ttk.Button(botones_frame, text="Ingreso Usuario", command = lambda : next_screen(root, 1)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
+    botones_frame = ttk.Frame(frame_global)
+    ttk.Button(botones_frame, text="Crear Usuario", command = lambda : next_screen(raiz, 2)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
+    ttk.Button(botones_frame, text="Ingreso Usuario", command = lambda : next_screen(raiz, 1)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
     botones_frame.grid(row=4, column=0, sticky="e")
 
-    desarrollado_frame = ttk.Frame(global_frame)
+    desarrollado_frame = ttk.Frame(frame_global)
     ttk.Label(desarrollado_frame,text="Construída por:", foreground="grey").grid(row=0, column=0, padx=5, sticky="w")
     ttk.Label(desarrollado_frame,text="Alessandro Perez", foreground="grey").grid(row=0, column=1, padx=5, sticky="w")
     ttk.Label(desarrollado_frame,text="Julen Gaumard", foreground="grey").grid(row=1, column=1, padx=5, sticky="w")
     ttk.Label(desarrollado_frame,text="Juan Pablo Dominguez Lucia", foreground="grey").grid(row=2, column=1, padx=5, sticky="w")
-    ttk.Label(desarrollado_frame,text="Tomás Aprigliano", foreground="grey").grid(row=3, column=1, padx=5, sticky="w")
     
     desarrollado_frame.grid(row=5, column=0, sticky="w", columnspan=2)
-    global_frame.pack(padx=10, pady=10)
+    frame_global.pack(padx=10, pady=10)
+
+    raiz.mainloop()
 
 def main():
     # Comienza la aplicacion, creando la ventana de bienvenida
     # Autor: Julen Gaumard
-    root = crear_ventana("TP Grupal Parte 1 - Grupo: Pala")
-    ventana_bienvenida(root)
-    root.mainloop()
+    raiz = crear_raiz("TP Grupal Parte 1 - Grupo: Pala")
+    ventana_bienvenida(raiz)
 
 main()
