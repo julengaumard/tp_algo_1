@@ -8,11 +8,14 @@ def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
     
         with open('mensajes.csv', 'a') as mensajes:
             
-            if cifrar_cesar(cifrado) == cifrado:
-            
+            if cifrado == 3:
+                cifrado = "C"
+                clave = str(clave)
+
                 mensaje = destinatario + "," + remitente + "," + cifrado+clave + "," + mensaje_cifrado + "\n" 
             
-            elif cifrar_atbash(cifrado) == cifrado:
+            elif cifrado == 4:
+                cifrado = "A"
                 
                 mensaje = destinatario + "," + remitente + "," + cifrado + "," + mensaje_cifrado + "\n" 
         
