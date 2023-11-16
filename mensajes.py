@@ -1,5 +1,6 @@
 from usuarios import buscar_usuario
 from cifrados import cifrar_atbash, cifrar_cesar
+from tkinter import messagebox
 
 def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
 
@@ -17,3 +18,5 @@ def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
         
         mensajes.write(mensaje)
 
+    else:
+        messagebox.showerror("Datos incorrentos","El usuario no existe")
