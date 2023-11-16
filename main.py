@@ -289,8 +289,8 @@ def crear_ventana_bienvenida(raiz, configuracion):
     ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['subtitulo_2']).grid(row=2, column=0, padx=5, sticky="w")
 
     botones_frame = ttk.Frame(frame_global)
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 2, configuracion)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 2, configuracion)).grid(row=3, column=0, padx=5, pady=10, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion)).grid(row=3, column=1, padx=5, pady=10, sticky="e")
     botones_frame.grid(row=4, column=0, sticky="e")
 
     desarrollado_frame = ttk.Frame(frame_global)

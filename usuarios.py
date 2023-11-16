@@ -108,6 +108,9 @@ def pruebas_validacion_clave():
     '''
 
 def leer_linea(ar):
+    # Lee una linea del archivo ingresado
+    # Autor: Julen Gaumard
+
     linea = ar.readline()
 
     result = False
@@ -117,6 +120,8 @@ def leer_linea(ar):
     return result
 
 def obtener_preguntas():
+    # Obtiene la lista de preguntas del archivo
+    # Autor: Julen Gaumard
 
     preguntas = []
 
@@ -130,7 +135,28 @@ def obtener_preguntas():
 
     return preguntas
 
+def obtener_indice_preguntas(opcion):
+    # Obtiene el indice que corresponde para la pregunta seleccionada
+    # Autor: Julen Gaumard
+
+    valor = -1
+
+    with open("preguntas.csv") as ar_preguntas:
+
+        pregunta = leer_linea(ar_preguntas)
+
+        while pregunta and valor == -1:
+            
+            if pregunta[1] == opcion:
+                valor = pregunta[0]
+
+            pregunta = leer_linea(ar_preguntas)
+
+    return valor
+
 def buscar_usuario(nombre_usuario):
+    # Busca si existe el usuario en el archivo de usuarios
+    # Autor: Julen Gaumard
 
     coincidencia = False
 
@@ -151,11 +177,14 @@ def buscar_usuario(nombre_usuario):
     return coincidencia
 
 def agregar_usuario(nombre_usuario, clave, opcion, respuesta):
+    # Agrega un usuario al archivo
+    # Autor: Julen Gaumard
 
     with open("usuarios.csv", "a") as ar_usuarios:
          
-        preguntas = obtener_preguntas()
-        indice_pregunta = preguntas.index(opcion)
+        # preguntas = obtener_preguntas()
+        # indice_pregunta = preguntas.index(opcion)
+        indice_pregunta = obtener_indice_preguntas(opcion)
 
         usuario = nombre_usuario + "," + clave + "," + str(indice_pregunta) + "," + respuesta + "\n"
 
