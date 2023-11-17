@@ -37,7 +37,8 @@ def cargar_configuraciones():
             'cifrar':"Cifrar",
             'descifrar':"Descifrar",
             'enviar_cesar':"Enviar mensaje Cifrado Cesar",
-            'enviar_atbash':"Enviar mensaje Cifrado Atbash"
+            'enviar_atbash':"Enviar mensaje Cifrado Atbash",
+            'recibir_mensajes':"Mensajes recibidos"
 
         },
 
@@ -94,13 +95,15 @@ def crear_ventana_principal(configuracion,usuario_ingresado):
     var_resultado = StringVar(Ventana)
     var_clave = StringVar(Ventana)
 
+    
     Bienvenida = ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["bienvenida"] + usuario_ingresado + "!", font= ("bahnschrift",12,"underline"), foreground="grey").grid(row=0,sticky = "w")
+    Recibir_mesajes = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["recibir_mensajes"],width=20).grid(row=0,padx=10,pady=5,sticky = "e")
     Ingreso_mensaje = ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["ingresar_mensajes"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w")
     cuadro_de_ingreso_mensaje = ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=2,column=0,padx=5,pady=10)
 
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=3,pady=10)
 
-    #Apartado para el cifrado cesar
+    #Cifrado cesar
 
     frame_cesar = ttk.Frame(Frame_principal)
     frame_cesar.grid(row=4,column=0,sticky="w")
@@ -114,7 +117,7 @@ def crear_ventana_principal(configuracion,usuario_ingresado):
 
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=5,pady=10)
 
-    #Apartado para el cifrado atbash
+    #Cifrado atbash
 
     frame_atbash = ttk.Frame(Frame_principal)
     frame_atbash.grid(row=6,column=0,sticky="w")
@@ -125,7 +128,7 @@ def crear_ventana_principal(configuracion,usuario_ingresado):
 
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=7,pady=10)
 
-    #Apartado para el Resultado
+    #Resultado
     frame_resul = ttk.Frame(Frame_principal)
     frame_resul.grid(row=8,column=0,sticky="w")
 
@@ -135,10 +138,10 @@ def crear_ventana_principal(configuracion,usuario_ingresado):
 
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=9,pady=5)
 
-    #Envio de mensajes
+    #Envio y recibimiento de mensajes
     Envio_cifrado_cesar = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_cesar"],command= lambda :generar_siguiente_ventana("", 3, configuracion,usuario_ingresado),width=30).grid(row=10,padx=10,pady=5)
     Envio_cifrado_atbash = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_atbash"],command= lambda :generar_siguiente_ventana("", 4, configuracion,usuario_ingresado), width=30).grid(row=11,padx=10,pady=5)
- 
+
     Frame_principal.pack(padx=10, pady=10)
     Ventana.mainloop()
 
@@ -279,7 +282,6 @@ def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
             texto_aclaracion = ttk.Label(frame_cesar,text=configuracion["ventana_principal"]["clave"], font= ("bahnschrift",10)).grid(row=2,sticky = "w",padx=10,pady=10)
             cuadro_de_ingreso_clave = ttk.Entry(frame_cesar,width=10,textvariable= var_clave).grid(row=2,column=1,pady=10)
             boton_cifrar_cesar = ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda: boton_cesar(var_texto.get(),var_clave.get(),var_resultado,1)).grid(row=2,column=2,padx=10,pady=10)
-            boton_descifrar_cesar = ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["descifrar"],width=8,command= lambda: boton_cesar(var_texto.get(),var_clave.get(),var_resultado,2)).grid(row=2,column=3,pady=10)
 
             ttk.Separator(frame_mensajes, orient='horizontal').grid(row=4,pady=5)
 
@@ -291,7 +293,6 @@ def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
 
             Titulo_cesar = ttk.Label(frame_cesar,text=configuracion["ventana_mensajes"]["atbash"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w",columnspan=2)
             boton_cifrar_atbash = ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda: boton_atbash(var_texto.get(),var_resultado)).grid(row=2,column=0,padx=10,pady=10)
-            boton_descifrar_atbash = ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["descifrar"],width=8,command= lambda: boton_atbash(var_texto.get(),var_resultado)).grid(row=2,column=1,pady=10)
 
             ttk.Separator(frame_mensajes, orient='horizontal').grid(row=4,pady=5)
 
