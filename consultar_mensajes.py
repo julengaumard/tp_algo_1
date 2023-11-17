@@ -11,10 +11,10 @@ def buscar_mensajes():
         
         ar_mensaje_general = open("mensajes_general.csv", 'w')
         ar_mensaje_privado = open("mensajes_privado.csv", 'w')
+
+        linea_mensajes = leer_linea(ar_mensajes)
         
         while linea_mensajes:
-        
-            linea_mensajes = leer_linea(ar_mensajes)
         
             destinatario, remitente, cifrado, mensaje_cifrado = linea_mensajes
         
@@ -34,10 +34,9 @@ def buscar_mensajes():
             elif usuario == '*':
                 mensaje_general = '*'+ remitente + ':' + mensaje_descifrado
                 ar_mensaje_general.write(mensaje_general)
-                
-            
-            linea = leer_linea(ar_mensajes)
 
+            linea_mensajes = leer_linea(ar_mensajes)
+                
     ar_mensaje_general.close()
     ar_mensaje_privado.close()
     
