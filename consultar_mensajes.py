@@ -3,9 +3,8 @@ from botones_cifrado import descifrado_atbash, descifrado_cesar
 from usuarios import leer_linea
 from tkinter import messagebox
 
-def buscar_mensajes():
+def buscar_mensajes(usuario):
     # Autor: Alessandro Perez y Dominguez Lucia Juan Pablo
-    usuario = buscar_usuario(destinatario)
     
     with open("mensajes.csv") as ar_mensajes:
         
@@ -40,7 +39,7 @@ def buscar_mensajes():
     ar_mensaje_general.close()
     ar_mensaje_privado.close()
 
-def mostrar_mensajes_ordenados():
+def juntar_mensajes():
     # Autor: Alessandro Perez
     
     ar_mensaje_general = open("mensajes_general.csv")
@@ -72,8 +71,6 @@ def mostrar_mensajes_ordenados():
     ar_mensaje_privado.close()
     ar_mensajes_totales.close()
 
-def main():
-    buscar_mensajes()
-    mostrar_mensajes_ordenados()
-
-main()
+def leer_mensajes(usuario_ingresado):
+    buscar_mensajes(usuario_ingresado)
+    juntar_mensajes()
