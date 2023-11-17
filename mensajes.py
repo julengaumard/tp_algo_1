@@ -18,11 +18,14 @@ def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
                 clave = str(clave)
 
                 mensaje = destinatario + "," + remitente + "," + cifrado+clave + "," + mensaje_cifrado + "\n" 
+                messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
+                
                     
             elif cifrado == 4:
                 cifrado = "A"
                         
                 mensaje = destinatario + "," + remitente + "," + cifrado + "," + mensaje_cifrado + "\n" 
+                messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
                 
             ar_mensajes.write(mensaje)
 
