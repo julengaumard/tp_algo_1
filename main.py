@@ -20,7 +20,7 @@ def cargar_configuraciones():
         },
 
         'ventana_bienvenida': {
-            'titulo': 'Bienvenido!',
+            'titulo': 'Bienvenido! ',
             'subtitulo': "A la aplicación de mensajes secretos del grupo Pala.",
             'subtitulo_2':"Para continuar presione continuar, de lo contrario cierre la ventana.",
             'desarrolladores': ["Alessandro Perez", "Julen Gaumard", "Juan Pablo Dominguez Lucia"],
@@ -28,6 +28,7 @@ def cargar_configuraciones():
         },
 
         'ventana_principal': {
+            'bienvenida' : "Bienvenido ",
             'ingresar_mensajes' : "\nIngrese mesaje para decifrar:",
             'cesar':"Cifrado cesar",
             'atbash':"Cifrado Atbash",
@@ -93,8 +94,9 @@ def crear_ventana_principal(configuracion,usuario_ingresado):
     var_resultado = StringVar(Ventana)
     var_clave = StringVar(Ventana)
 
-    Ingreso_mensaje = ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["ingresar_mensajes"], font= ("bahnschrift",14,"underline")).grid(row=0,sticky = "w")
-    cuadro_de_ingreso_mensaje = ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=1,column=0,padx=5,pady=10)
+    Bienvenida = ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["bienvenida"] + usuario_ingresado + "!", font= ("bahnschrift",12,"underline"), foreground="grey").grid(row=0,sticky = "w")
+    Ingreso_mensaje = ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["ingresar_mensajes"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w")
+    cuadro_de_ingreso_mensaje = ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=2,column=0,padx=5,pady=10)
 
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=3,pady=10)
 
