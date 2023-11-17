@@ -181,7 +181,7 @@ def crear_usuario(nombre_user, clave, opcion, respuesta, raiz, configuracion):
     else:
         agregar_usuario(nombre_user, clave, opcion, respuesta)
         raiz.destroy()
-        crear_ventana_principal()
+        crear_ventana_principal(configuracion,nombre_user)
 
 def iniciar_sesion(nombre_user, clave, raiz, configuracion):
     # Chequea si el usuario existe y si la clave ingresa coincide
