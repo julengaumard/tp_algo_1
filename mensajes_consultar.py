@@ -2,9 +2,9 @@ from usuarios import buscar_usuario
 from botones_cifrado import descifrado_atbash, descifrado_cesar
 from usuarios import leer_linea
 from tkinter import messagebox
-import os
 
 def buscar_mensajes(usuario):
+    # busca en el archivo mensajes.csv solo los mensajes para el destinatario o los generales y los separa en dos archivos
     # Autor: Alessandro Perez y Dominguez Lucia Juan Pablo
     
     with open("mensajes.csv") as ar_mensajes:
@@ -49,7 +49,8 @@ def buscar_mensajes(usuario):
     ar_mensaje_privado.close()
 
 def juntar_mensajes():
-    # Autor: Alessandro Perez
+    # junta los dos archivos previamente creados en uno solo
+    # Autor: Alessandro Perez y Dominguez Lucia Juan Pablo
     
     ar_mensaje_general = open("mensajes_general.csv")
     ar_mensaje_privado = open("mensajes_privado.csv")
