@@ -3,14 +3,14 @@ from botones_cifrado import descifrado_atbash, descifrado_cesar
 from usuarios import leer_linea
 from tkinter import messagebox
 
-def listar_mensaje():
+def buscar_mensajes():
     # Autor: Alessandro Perez y Dominguez Lucia Juan Pablo
     usuario = buscar_usuario(destinatario)
     
     with open("mensajes.csv") as ar_mensajes:
         
         ar_mensaje_general = open("mensajes_general.csv", 'w')
-        ar_mensaje_privados = open("mensajes_privado.csv", 'w')
+        ar_mensaje_privado = open("mensajes_privado.csv", 'w')
         
         while linea_mensajes:
         
@@ -25,19 +25,19 @@ def listar_mensaje():
                 clave = cifrado[1]
                 mensaje_descifrado = descifrado_cesar(mensaje_cifrado, clave)
             
-            mensaje_general = '*'+ remitente + ':' + mensaje_descifrado
-            mensaje_privado = remitente + ':' + mensaje_descifrado
-            
             
             if usuario == destinatario:
-                
+                mensaje_privado = remitente + ':' + mensaje_descifrado
+                ar_mensaje_privado.write(mensaje_privado)
             
             
             elif usuario == '*':
+                mensaje_general = '*'+ remitente + ':' + mensaje_descifrado
+                ar_mensaje_general.write(mensaje_general)
                 
             
             linea = leer_linea(ar_mensajes)
 
     ar_mensaje_general.close()
-    ar_mensaje_privados.close()
+    ar_mensaje_privado.close()
     
