@@ -46,3 +46,18 @@ def boton_cesar(texto,clave,resultado,boton):
             cifrar = cifrar_cesar(texto,negativo)
 
             resultado.set(cifrar)
+
+# FUNCIONES PARA EL APARTADO DE MENSAJES.CSV 
+
+def descifrado_atbash(mensaje):
+    
+    cifrar = cifrar_atbash(mensaje)
+    
+    return cifrar
+
+def descifrado_cesar(mensaje, clave):
+
+    negativo = -int(clave)
+    cifrar = cifrar_cesar(mensaje,negativo)
+    
+    return cifrar
