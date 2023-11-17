@@ -81,6 +81,6 @@ def juntar_mensajes():
     ar_mensaje_privado.close()
     ar_mensajes_totales.close()
 
-def leer_mensajes(usuario_ingresado):
+def armar_archivo_mensajes(usuario_ingresado):
     buscar_mensajes(usuario_ingresado)
     juntar_mensajes()

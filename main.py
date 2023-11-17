@@ -2,9 +2,9 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from botones_cifrado import boton_atbash, boton_cesar
-from usuarios import obtener_preguntas, buscar_usuario, validacion_usuario, validacion_clave, agregar_usuario
+from usuarios import obtener_preguntas, buscar_usuario, validacion_usuario, validacion_clave, agregar_usuario, leer_linea
 from mensajes import enviar_mensaje
-from mensajes_consultar import mostrar_mensajes
+from mensajes_consultar import armar_archivo_mensajes
 
 def cargar_configuraciones():
     # Devuelve textos y configuraciones
@@ -17,7 +17,9 @@ def cargar_configuraciones():
             'identificacion': "Identificación para acceso",
             'creacion': "Creacion de usuario",
             'cesar': "Enviar mensaje Cesar",
-            'atbash': "Enviar mensaje Atbash"
+            'atbash': "Enviar mensaje Atbash",
+            'mensajes': "Mensajes recibidos"
+
         },
 
         'ventana_bienvenida': {
@@ -48,7 +50,10 @@ def cargar_configuraciones():
             'ingresar_usuario' : "Ingrese nombre de usuario: ",
             'cesar' : "Cifrado cesar: ",
             'atbash' : "Cifrado atbash: ",
-            'enviar' : "Enviar "
+            'enviar' : "Enviar ",
+            'mensajes_recibidos' : "Mensajes recibidos",
+            'lista_mensajes' : "lista de mensajes:",
+            'no_mensajes' : "no tienes mensajes recibidos",
 
         },
         
@@ -98,7 +103,7 @@ def crear_ventana_principal(configuracion,usuario_ingresado):
 
     
     Bienvenida = ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["bienvenida"] + usuario_ingresado + "!", font= ("bahnschrift",12,"underline"), foreground="grey").grid(row=0,sticky = "w")
-    Recibir_mesajes = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["recibir_mensajes"],width=20).grid(row=0,padx=10,pady=5,sticky = "e")
+    boton_Recibir_mesajes = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["recibir_mensajes"],command = lambda:generar_siguiente_ventana("", 5, configuracion,usuario_ingresado),width=20).grid(row=0,padx=10,pady=5,sticky = "e")
     Ingreso_mensaje = ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["ingresar_mensajes"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w")
     cuadro_de_ingreso_mensaje = ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=2,column=0,padx=5,pady=10)
 
@@ -152,23 +157,35 @@ def crear_ventana_principal(configuracion,usuario_ingresado):
 def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
     # Crea la ventana correspondiente, segun la opcion recibida.
     # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
-
+    
     if opcion == 1:
+        # crea ventana de inicio de sesion
+
         raiz.destroy()
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['identificacion'])
         crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
 
     elif opcion == 2:
+        # crea ventana de crear usuario
         raiz.destroy()
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['creacion'])
         crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
     
     elif opcion == 3:
+        # crea ventana de envio mensaje cifrado cesar
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['cesar'])
         crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
     
     elif opcion == 4:
+        # crea ventana de envio mensaje cifrado atbash
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['atbash'])
+        crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
+
+    elif opcion == 5:
+        # crea ventana de mensajes recibidos segun el usuario
+        # armar_archivo_mensajes(usuario_ingresado)
+
+        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['mensajes'])
         crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
 
 
@@ -225,6 +242,8 @@ def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
 
 
     if opcion < 3:
+
+        # Interfaz para el ingreso de sesion
         frame_usuarios = ttk.Frame(raiz)
 
         var_clave = StringVar(raiz)
@@ -241,6 +260,7 @@ def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
         ttk.Entry(frame_usuarios,textvariable = var_clave, show="*").grid(row=3, column=1, pady=5, sticky="e")
 
         if opcion == 2:
+            # Interfaz para la cracion de usuario
             opciones = obtener_preguntas()
             var_opcion.set(opciones[0]) 
             
@@ -259,8 +279,9 @@ def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
         frame_usuarios.pack(padx=10)
 
 
-    else:
-        
+    elif opcion == 3 or opcion == 4:
+        #Interfaz el envio de mensajes dependiendo del cifrado
+
         frame_mensajes = ttk.Frame(raiz)
         var_usuario = usuario_ingresado
         var_destinatario = StringVar(raiz)
@@ -274,7 +295,7 @@ def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
         ttk.Separator(frame_mensajes, orient='horizontal').grid(row=2,pady=10)
 
         if opcion == 3:
-            #Apartado para el cifrado cesar
+            #Interfaz para el cifrado cesar
 
             frame_cesar = ttk.Frame(frame_mensajes)
             frame_cesar.grid(row=3,column=0,sticky="w")
@@ -287,7 +308,7 @@ def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
             ttk.Separator(frame_mensajes, orient='horizontal').grid(row=4,pady=5)
 
         elif opcion == 4:
-            #Apartado para el cifrado atbash
+            #Interfaz para el cifrado atbash
 
             frame_cesar = ttk.Frame(frame_mensajes)
             frame_cesar.grid(row=3,column=0,sticky="w")
@@ -297,7 +318,6 @@ def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
 
             ttk.Separator(frame_mensajes, orient='horizontal').grid(row=4,pady=5)
 
-        #Apartado para el Resultado
         frame_resul = ttk.Frame(frame_mensajes)
         frame_resul.grid(row=5,column=0,sticky="w")
 
@@ -306,9 +326,6 @@ def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
         var_resultado.set(configuracion["ventana_principal"]["resultado"][1])
 
         ttk.Separator(frame_mensajes, orient='horizontal').grid(row=6,pady=5)
-
-
-        #Apartado Destinatario
 
         frame_destinatario = ttk.Frame(frame_mensajes)
         frame_destinatario.grid(row=7,column=0,sticky="w")
@@ -320,6 +337,32 @@ def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
         
         boton_enviar = ttk.Button(frame_mensajes, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario.get(),var_usuario,opcion,var_clave.get(),var_resultado.get()) ,width=12).grid(row=9,padx=10,pady=10)
         frame_mensajes.pack(padx=10)
+    
+    elif opcion == 5:
+        #Interfaz para recibir los mensajes
+        frame_mensajes = ttk.Frame(raiz)
+        titulo_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["mensajes_recibidos"], font= ("bahnschrift",14,"underline")).grid(row=0)
+        lista_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["lista_mensajes"], font= ("bahnschrift",11,"underline")).grid(row=1,sticky="w")
+
+        frame_mensajes.pack(padx=10)
+
+        with open("mensajes_recibidos.csv") as ar_mensajes:
+
+            linea_mensajes = leer_linea(ar_mensajes)
+
+            remitente,mensaje_descifrado = linea_mensajes
+
+            contador = 2
+
+            if not linea_mensajes:
+                lista_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["no_mensajes"], font= ("bahnschrift",10,)).grid(row=2)
+
+
+            while linea_mensajes:
+                
+                titulo_mensajes = ttk.Label(frame_mensajes,text="-" *150, font= ("bahnschrift",10)).grid(row=contador)
+                titulo_mensajes = ttk.Label(frame_mensajes,text="-" *20, font= ("bahnschrift",10)).grid(row=0)
+                contador += 1
 
 
 def crear_ventana_bienvenida(raiz, configuracion):
