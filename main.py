@@ -4,6 +4,7 @@ from tkinter import messagebox
 from botones_cifrado import boton_atbash, boton_cesar
 from usuarios import obtener_preguntas, buscar_usuario, validacion_usuario, validacion_clave, agregar_usuario
 from mensajes import enviar_mensaje
+from mensajes_consultar import mostrar_mensajes
 
 def cargar_configuraciones():
     # Devuelve textos y configuraciones
