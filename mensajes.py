@@ -3,6 +3,8 @@ from tkinter import messagebox
 
 def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
 
+    # Autor: Alessandro Perez y Dominguez Lucia Juan Pablo
+
     if destinatario == '*':
         with open('mensajes.csv', 'a') as ar_mensajes:
                     

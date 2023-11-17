@@ -1,16 +1,10 @@
 from usuarios import buscar_usuario
 from botones_cifrado import descifrado_atbash, descifrado_cesar
+from usuarios import leer_linea
 from tkinter import messagebox
 
-def leer_linea(archivo):
-    linea = archivo.readline()
-    
-    if linea:
-        devolver = linea.rstrip("\n").split(',')
-    
-    return devolver 
-
 def listar_mensaje():
+    # Autor: Alessandro Perez y Dominguez Lucia Juan Pablo
     usuario = buscar_usuario(destinatario)
     
     with open("mensajes.csv") as ar_mensajes:
