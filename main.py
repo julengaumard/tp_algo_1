@@ -165,23 +165,23 @@ def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
 
         raiz.destroy()
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['identificacion'])
-        crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
+        crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
 
     elif opcion == 2:
         # crea ventana de crear usuario
         raiz.destroy()
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['creacion'])
-        crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
+        crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
     
     elif opcion == 3:
         # crea ventana de envio mensaje cifrado cesar
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['cesar'])
-        crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
+        crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
     
     elif opcion == 4:
         # crea ventana de envio mensaje cifrado atbash
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['atbash'])
-        crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
+        crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
 
     elif opcion == 5:
         # crea ventana de mensajes recibidos segun el usuario
@@ -193,7 +193,7 @@ def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
 
         if linea_mensajes:
             raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['mensajes'])
-            crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
+            crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
         else:
             no_tienes_mensajes = messagebox.showinfo("No se encontraron mensajes", "No has recibido nigun mensaje")
 
@@ -246,7 +246,7 @@ def crear_raiz(nombre_ventana):
     return raiz
 
 
-def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
+def crear_interfaz(raiz, opcion, configuracion,usuario_ingresado):
     # Crea la interfaz dependiente del boton presionado
     # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
 
