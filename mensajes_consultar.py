@@ -2,6 +2,7 @@ from usuarios import buscar_usuario
 from botones_cifrado import descifrado_atbash, descifrado_cesar
 from usuarios import leer_linea
 from tkinter import messagebox
+import os
 
 def buscar_mensajes(usuario):
     # busca en el archivo mensajes.csv solo los mensajes para el destinatario o los generales y los separa en dos archivos
@@ -78,7 +79,11 @@ def juntar_mensajes():
         linea_mensaje_privado = leer_linea(ar_mensaje_privado)
     
     ar_mensaje_general.close()
+    os.remove("mensajes_general.csv")
+
     ar_mensaje_privado.close()
+    os.remove("mensajes_privado.csv")
+    
     ar_mensajes_totales.close()
 
 def armar_archivo_mensajes(usuario_ingresado):

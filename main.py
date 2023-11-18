@@ -5,6 +5,7 @@ from botones_cifrado import boton_atbash, boton_cesar
 from usuarios import obtener_preguntas, buscar_usuario, validacion_usuario, validacion_clave, agregar_usuario, leer_linea
 from mensajes import enviar_mensaje
 from mensajes_consultar import armar_archivo_mensajes
+import os
 
 def cargar_configuraciones():
     # Devuelve textos y configuraciones
@@ -41,7 +42,7 @@ def cargar_configuraciones():
             'descifrar':"Descifrar",
             'enviar_cesar':"Enviar mensaje Cifrado Cesar",
             'enviar_atbash':"Enviar mensaje Cifrado Atbash",
-            'recibir_mensajes':"Mensajes recibidos"
+            'recibir_mensajes':"Mensajes recibidos",
 
         },
 
@@ -54,6 +55,7 @@ def cargar_configuraciones():
             'mensajes_recibidos' : "Mensajes recibidos",
             'lista_mensajes' : "lista de mensajes:",
             'no_mensajes' : "no tienes mensajes recibidos",
+            'cantidad_mensajes':"Total de mensajes recibidos: "
 
         },
         
@@ -183,10 +185,18 @@ def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
 
     elif opcion == 5:
         # crea ventana de mensajes recibidos segun el usuario
-        # armar_archivo_mensajes(usuario_ingresado)
+        armar_archivo_mensajes(usuario_ingresado)
 
-        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['mensajes'])
-        crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
+        ar_mensajes = open("mensajes_recibidos.csv","r")
+        linea_mensajes = leer_linea(ar_mensajes)
+        ar_mensajes.close()
+
+        if linea_mensajes:
+            raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['mensajes'])
+            crear_ventana_botones(raiz_nueva, opcion, configuracion,usuario_ingresado)
+        else:
+            no_tienes_mensajes = messagebox.showinfo("No se encontraron mensajes", "No has recibido nigun mensaje")
+
 
 
 def crear_usuario(nombre_user, clave, opcion, respuesta, raiz, configuracion):
@@ -334,35 +344,47 @@ def crear_ventana_botones(raiz, opcion, configuracion,usuario_ingresado):
         Ingrese_destinatario = ttk.Label(frame_destinatario,text=configuracion["ventana_mensajes"]["ingresar_usuario"], font= ("bahnschrift",10)).grid(row=1,column = 0 ,sticky = "w",padx=10,pady=10)
         cuadro_de_destinatario = ttk.Entry(frame_destinatario,textvariable=var_destinatario, width=20).grid(row=1,column=1,padx=5,pady=10)
 
-        
         boton_enviar = ttk.Button(frame_mensajes, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario.get(),var_usuario,opcion,var_clave.get(),var_resultado.get()) ,width=12).grid(row=9,padx=10,pady=10)
         frame_mensajes.pack(padx=10)
     
     elif opcion == 5:
+
         #Interfaz para recibir los mensajes
         frame_mensajes = ttk.Frame(raiz)
         titulo_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["mensajes_recibidos"], font= ("bahnschrift",14,"underline")).grid(row=0)
         lista_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["lista_mensajes"], font= ("bahnschrift",11,"underline")).grid(row=1,sticky="w")
 
-        frame_mensajes.pack(padx=10)
-
         with open("mensajes_recibidos.csv") as ar_mensajes:
 
             linea_mensajes = leer_linea(ar_mensajes)
 
-            remitente,mensaje_descifrado = linea_mensajes
-
-            contador = 2
-
-            if not linea_mensajes:
-                lista_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["no_mensajes"], font= ("bahnschrift",10,)).grid(row=2)
-
+            ult_renglon = 2
+            cant_mensaje = 0
 
             while linea_mensajes:
                 
-                titulo_mensajes = ttk.Label(frame_mensajes,text="-" *150, font= ("bahnschrift",10)).grid(row=contador)
-                titulo_mensajes = ttk.Label(frame_mensajes,text="-" *20, font= ("bahnschrift",10)).grid(row=0)
-                contador += 1
+                remitente,mensaje_descifrado = linea_mensajes
+
+                mensaje = remitente + ": " + mensaje_descifrado
+
+                titulo_mensajes = ttk.Label(frame_mensajes,text="-" *150, font= ("bahnschrift",12)).grid(row=ult_renglon,sticky="w")
+                mensaje_recibido = ttk.Label(frame_mensajes,text=mensaje, font= ("bahnschrift",12,"bold")).grid(row=ult_renglon+1,sticky="w")
+
+                ult_renglon += 2
+                cant_mensaje += 1
+
+                linea_mensajes = leer_linea(ar_mensajes)
+
+        os.remove("mensajes_recibidos.csv")
+
+        frame_cantidad = ttk.Frame(frame_mensajes)
+        frame_cantidad.grid(row=ult_renglon,padx=10,)
+
+        cantidad_mensajes = ttk.Label(frame_cantidad,text=configuracion["ventana_mensajes"]["cantidad_mensajes"],font=("bahnschrift",12)).grid(row=0,sticky="w")
+        cantidad_mensajes = ttk.Label(frame_cantidad,text=cant_mensaje,font=("bahnschrift",12,"bold")).grid(row=0,column=1,sticky="w")
+
+        frame_mensajes.pack(padx=10)
+
 
 
 def crear_ventana_bienvenida(raiz, configuracion):
@@ -376,8 +398,8 @@ def crear_ventana_bienvenida(raiz, configuracion):
     ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['subtitulo_2']).grid(row=2, column=0, padx=5, sticky="w")
 
     botones_frame = ttk.Frame(frame_global)
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 2, configuracion,"")).grid(row=3, column=0, padx=5, pady=10, sticky="e")
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion,"")).grid(row=3, column=1, padx=5, pady=10, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 2, configuracion,"")).grid(row=3, column=0, padx=5, pady=12, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion,"")).grid(row=3, column=1, padx=5, pady=12, sticky="e")
     botones_frame.grid(row=4, column=0, sticky="e")
 
     desarrollado_frame = ttk.Frame(frame_global)
