@@ -17,6 +17,7 @@ def cargar_configuraciones():
             'principal': "Cifrado y envío de mensajes",
             'identificacion': "Identificación para acceso",
             'creacion': "Creacion de usuario",
+            'recuperar_clave': "Recuperar contraseña",
             'cesar': "Enviar mensaje Cesar",
             'atbash': "Enviar mensaje Atbash",
             'mensajes': "Mensajes recibidos"
@@ -160,19 +161,24 @@ def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
     # Crea la ventana correspondiente, segun la opcion recibida.
     # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
     
-    if opcion == 1:
+    if opcion == 0:
         # crea ventana de inicio de sesion
 
         raiz.destroy()
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['identificacion'])
         crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
 
-    elif opcion == 2:
+    elif opcion == 1:
         # crea ventana de crear usuario
         raiz.destroy()
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['creacion'])
         crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
-    
+
+    elif opcion == 2:
+    # crea ventana de crear usuario
+        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['recuperar_clave'])
+        crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
+
     elif opcion == 3:
         # crea ventana de envio mensaje cifrado cesar
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['cesar'])
@@ -196,8 +202,6 @@ def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
             crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
         else:
             no_tienes_mensajes = messagebox.showinfo("No se encontraron mensajes", "No has recibido nigun mensaje")
-
-
 
 def crear_usuario(nombre_user, clave, opcion, respuesta, raiz, configuracion):
 
@@ -251,7 +255,7 @@ def crear_interfaz(raiz, opcion, configuracion,usuario_ingresado):
     # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
 
 
-    if opcion < 3:
+    if opcion < 2:
 
         # Interfaz para el ingreso de sesion
         frame_usuarios = ttk.Frame(raiz)
@@ -269,8 +273,8 @@ def crear_interfaz(raiz, opcion, configuracion,usuario_ingresado):
         ttk.Label(frame_usuarios,text=configuracion["ventana_usuarios"]["clave"]).grid(row=3, column=0, pady=5, sticky="w")
         ttk.Entry(frame_usuarios,textvariable = var_clave, show="*").grid(row=3, column=1, pady=5, sticky="e")
 
-        if opcion == 2:
-            # Interfaz para la cracion de usuario
+        if opcion == 1:
+            # Interfaz para la creacion de usuario
             opciones = obtener_preguntas()
             var_opcion.set(opciones[0]) 
             
@@ -283,11 +287,36 @@ def crear_interfaz(raiz, opcion, configuracion,usuario_ingresado):
             ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["crear"], command = lambda : crear_usuario(var_usuario.get(), var_clave.get(), var_opcion.get(), var_respuesta.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
 
         else:
-            ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["olvide"], ).grid(row=9, column=0, pady=10, sticky="w")
+            ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["olvide"], command = lambda: generar_siguiente_ventana("",2,configuracion,"") ).grid(row=9, column=0, pady=10, sticky="w")
             ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["iniciar"], command = lambda : iniciar_sesion(var_usuario.get(), var_clave.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
 
         frame_usuarios.pack(padx=10)
 
+    elif opcion == 2:
+        frame_recuperar = ttk.Frame(raiz)
+
+        var_usuario = StringVar(raiz)
+        var_pregunta = StringVar(raiz)
+        var_respuesta = StringVar(raiz)
+
+        opciones = obtener_preguntas()
+        var_pregunta.set(opciones[0]) 
+
+
+        ttk.Label(frame_recuperar, text=configuracion["nombre_ventanas"]["recuperar_clave"], font=("bahnschrift", 14 ,"underline")).grid(row=0, column=0, pady=10, columnspan=2)
+
+        ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["usuario"]).grid(row=1, column=0, pady=5, sticky="w")
+        ttk.Entry(frame_recuperar,textvariable = var_respuesta).grid(row=1, column=1, pady=5, sticky="e")
+
+        ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["pregunta"]).grid(row=2, column=0, pady=5, sticky="w")
+        ttk.OptionMenu(frame_recuperar, var_pregunta, *opciones).grid(row=2, column=1, pady=5, sticky="e")
+
+        ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["respuesta"]).grid(row=3, column=0, pady=5, sticky="w")
+        ttk.Entry(frame_recuperar,textvariable = var_respuesta).grid(row=3, column=1, pady=5, sticky="e")
+
+        ttk.Button(frame_recuperar, text=configuracion["nombre_ventanas"]["recuperar_clave"], width= 20).grid(row=6, column=1, pady=10, sticky="e")
+
+        frame_recuperar.pack(padx=10)
 
     elif opcion == 3 or opcion == 4:
         #Interfaz el envio de mensajes dependiendo del cifrado
@@ -398,8 +427,8 @@ def crear_ventana_bienvenida(raiz, configuracion):
     ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['subtitulo_2']).grid(row=2, column=0, padx=5, sticky="w")
 
     botones_frame = ttk.Frame(frame_global)
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 2, configuracion,"")).grid(row=3, column=0, padx=5, pady=12, sticky="e")
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion,"")).grid(row=3, column=1, padx=5, pady=12, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion,"")).grid(row=3, column=0, padx=5, pady=12, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 0, configuracion,"")).grid(row=3, column=1, padx=5, pady=12, sticky="e")
     botones_frame.grid(row=4, column=0, sticky="e")
 
     desarrollado_frame = ttk.Frame(frame_global)
