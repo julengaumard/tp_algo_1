@@ -292,7 +292,7 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada)
     elif not verificacion:
         messagebox.showerror("Error al intentar recuperar clave","el usuario indicado no existe")
     
-    if not respuesta_ingresada:
+    elif not respuesta_ingresada:
         messagebox.showerror("Error al intentar recuperar clave","No escribiste una respuesta")
 
 
