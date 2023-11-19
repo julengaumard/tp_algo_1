@@ -245,11 +245,12 @@ def crear_nuevo_archivo_usuario(usuario_ingresado,tipo):
     os.rename("usuario_actualizado","usuarios.csv")
 
 
-def olvide_contraseña(usuario_ingresado,respuesta_ingresada):
+def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada):
     # Verifica que la respuesta ingresada sea la correcta para devolver la contraseña, de no ser asi, agrega un intento fallido al usuario.
     # Autor: Dominguez lucia Juan Pablo
     
     verificacion = buscar_usuario(usuario_ingresado)
+    pregunta_ingresada = obtener_indice_preguntas(pregunta_ingresada)
 
     if verificacion:
         ar_usuarios = open("usuarios.csv","r")
@@ -264,7 +265,7 @@ def olvide_contraseña(usuario_ingresado,respuesta_ingresada):
             if usuario == usuario_ingresado:
                 usuario_encontrado = True
 
-                if respuesta == respuesta_ingresada:
+                if respuesta == respuesta_ingresada and pregunta == pregunta_ingresada:
                     messagebox.showinfo("Respuesta correcta","Su contraseña es " + clave)
                 else:
                     intentos_fallidos = True
@@ -286,3 +287,4 @@ def olvide_contraseña(usuario_ingresado,respuesta_ingresada):
 if __name__ == "__main__":
     import doctest
     print(doctest.testmod())
+
