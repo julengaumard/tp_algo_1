@@ -1,3 +1,6 @@
+from tkinter import messagebox
+import os
+
 def validacion_usuario(cadena):
     # Determina la cadena es un nombre de usuario valido.
     # Autor: Julen Gaumard
@@ -165,7 +168,7 @@ def buscar_usuario(nombre_usuario):
             
             usuario = leer_linea(ar_usuario)
 
-            while usuario:
+            while usuario and not coincidencia:
 
                 if nombre_usuario == usuario[0]:
                     coincidencia = usuario
@@ -189,6 +192,92 @@ def agregar_usuario(nombre_usuario, clave, opcion, respuesta):
         usuario = nombre_usuario + "," + clave + "," + str(indice_pregunta) + "," + respuesta + "," + "0" "\n"
 
         ar_usuarios.write(usuario)
+
+def crear_nuevo_archivo_usuario(usuario_ingresado,tipo):
+
+    ar_usuarios = open("usuarios.csv","r")
+    ar_intentos = open("usuario_actualizado","w")
+
+    linea = leer_linea(ar_usuarios)
+    if tipo == 1:
+        while linea:
+
+            usuario,clave,pregunta,respuesta,intentos = linea
+
+            if usuario == usuario_ingresado:
+                intentos = int(intentos) + 1
+                intentos = str(intentos)
+
+                nueva_linea = usuario + "," + clave + "," + pregunta + "," + respuesta + "," + intentos + "\n"
+                ar_intentos.write(nueva_linea)
+
+            else:
+                nueva_linea = usuario + "," + clave + "," + pregunta + "," + respuesta + "," + intentos + "\n"
+                ar_intentos.write(nueva_linea)
+
+            linea = leer_linea(ar_usuarios)
+
+    else:
+        while linea:
+
+            usuario,clave,pregunta,respuesta,intentos = linea
+
+            if usuario == usuario_ingresado:
+                intentos = 0
+                intentos = str(intentos)
+
+                nueva_linea = usuario + "," + clave + "," + pregunta + "," + respuesta + "," + intentos + "\n"
+                ar_intentos.write(nueva_linea)
+
+            else:
+                nueva_linea = usuario + "," + clave + "," + pregunta + "," + respuesta + "," + intentos + "\n"
+                ar_intentos.write(nueva_linea)
+
+            linea = leer_linea(ar_usuarios)
+
+
+    ar_usuarios.close()
+    os.remove("usuarios.csv")
+
+    ar_intentos.close()
+    os.rename("usuario_actualizado","usuarios.csv")
+
+
+def olvide_contraseña(usuario_ingresado,respuesta_ingresada):
+    
+    verificacion = buscar_usuario(usuario_ingresado)
+
+    if verificacion:
+        ar_usuarios = open("usuarios.csv","r")
+        linea = leer_linea(ar_usuarios)
+        usuario_encontrado = False
+        intentos_fallidos = False
+
+        while linea and not usuario_encontrado:
+
+            usuario,clave,pregunta,respuesta,intentos = linea
+
+            if usuario == usuario_ingresado:
+                usuario_encontrado = True
+
+                if respuesta == respuesta_ingresada:
+                    messagebox.showinfo("Respuesta correcta","Su contraseña es " + clave)
+                else:
+                    intentos_fallidos = True
+                    messagebox.showerror("Respuesta incorrecta","Respuesta incorrecta, intenta recordar si lleva mayusculas")
+
+            linea = leer_linea (ar_usuarios)
+        
+        ar_usuarios.close()
+
+        if intentos_fallidos:
+            crear_nuevo_archivo_usuario(usuario_ingresado,1)
+        else:
+            crear_nuevo_archivo_usuario(usuario_ingresado,2)
+    
+    else:
+        messagebox.showerror("El usuario indicado no existe")
+
 
 if __name__ == "__main__":
     import doctest
