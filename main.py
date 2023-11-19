@@ -265,7 +265,7 @@ def crear_interfaz(raiz, opcion, configuracion,usuario_ingresado):
         var_respuesta = StringVar(raiz)
         var_usuario = StringVar(raiz)
 
-        ttk.Label(frame_usuarios, text=configuracion["ventana_usuarios"]["ingresar"], font=("Arial", 20)).grid(row=0, column=0, pady=10, sticky="w", columnspan=2)
+        ttk.Label(frame_usuarios, text=configuracion["ventana_usuarios"]["ingresar"], font=("bahnschrift", 14 ,"underline")).grid(row=0, column=0, pady=10, columnspan=2)
         
         ttk.Label(frame_usuarios,text=configuracion["ventana_usuarios"]["usuario"]).grid(row=1, column=0, pady=5, sticky="w")
         ttk.Entry(frame_usuarios,textvariable = var_usuario).grid(row=1, column=1, pady=5, sticky="e")
@@ -422,7 +422,7 @@ def crear_ventana_bienvenida(raiz, configuracion):
 
     frame_global = ttk.Frame(raiz)
 
-    ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['titulo'], font=("Arial", 20)).grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['titulo'], font=("bahnschrift",14,"underline")).grid(row=0, column=0, padx=5, pady=5, sticky="w")
     ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['subtitulo']).grid(row=1, column=0, padx=5, sticky="w")
     ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['subtitulo_2']).grid(row=2, column=0, padx=5, sticky="w")
 
