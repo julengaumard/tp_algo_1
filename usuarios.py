@@ -194,6 +194,8 @@ def agregar_usuario(nombre_usuario, clave, opcion, respuesta):
         ar_usuarios.write(usuario)
 
 def crear_nuevo_archivo_usuario(usuario_ingresado,tipo):
+    # Crea un nuevo archivo usuarios.csv dependiendo de si el intento de recuperacion fue un existe o si fue fallido
+    # Autor: Dominguez lucia Juan Pablo
 
     ar_usuarios = open("usuarios.csv","r")
     ar_intentos = open("usuario_actualizado","w")
@@ -244,6 +246,8 @@ def crear_nuevo_archivo_usuario(usuario_ingresado,tipo):
 
 
 def olvide_contraseña(usuario_ingresado,respuesta_ingresada):
+    # Verifica que la respuesta ingresada sea la correcta para devolver la contraseña, de no ser asi, agrega un intento fallido al usuario.
+    # Autor: Dominguez lucia Juan Pablo
     
     verificacion = buscar_usuario(usuario_ingresado)
 
