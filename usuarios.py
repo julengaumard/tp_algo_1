@@ -249,7 +249,8 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada)
     # Verifica que la respuesta ingresada sea la correcta para devolver la contraseña, de no ser asi, agrega un intento fallido al usuario.
     # Autor: Dominguez lucia Juan Pablo
     
-    verificacion = buscar_usuario(usuario_ingresado)
+    # verificacion = buscar_usuario(usuario_ingresado)
+    verificacion = True
     pregunta_ingresada = obtener_indice_preguntas(pregunta_ingresada)
 
     if verificacion:
@@ -257,6 +258,7 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada)
         linea = leer_linea(ar_usuarios)
         usuario_encontrado = False
         intentos_fallidos = False
+        bloqueado = False
 
         while linea and not usuario_encontrado:
 
@@ -264,9 +266,14 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada)
 
             if usuario == usuario_ingresado:
                 usuario_encontrado = True
+                intentos = int(intentos)
 
-                if respuesta == respuesta_ingresada and pregunta == pregunta_ingresada:
+                if intentos >= 3:
+                    bloqueado = True
+
+                elif respuesta == respuesta_ingresada and pregunta == pregunta_ingresada:
                     messagebox.showinfo("Respuesta correcta","Su contraseña es " + clave)
+
                 else:
                     intentos_fallidos = True
                     messagebox.showerror("Respuesta incorrecta","Respuesta incorrecta, intenta recordar si lleva mayusculas")
@@ -277,6 +284,8 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada)
 
         if intentos_fallidos:
             crear_nuevo_archivo_usuario(usuario_ingresado,1)
+        elif bloqueado:
+            messagebox.showerror("Usuario bloqueado","El usuario a sido bloqueado")
         else:
             crear_nuevo_archivo_usuario(usuario_ingresado,2)
     
@@ -290,4 +299,5 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada)
 if __name__ == "__main__":
     import doctest
     print(doctest.testmod())
+
 
