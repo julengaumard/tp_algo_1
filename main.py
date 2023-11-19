@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from botones_cifrado import boton_atbash, boton_cesar
-from usuarios import obtener_preguntas, buscar_usuario, validacion_usuario, validacion_clave, agregar_usuario, leer_linea
+from usuarios import obtener_preguntas, buscar_usuario, validacion_usuario, validacion_clave, agregar_usuario, leer_linea, olvide_contraseña
 from mensajes import enviar_mensaje
 from mensajes_consultar import armar_archivo_mensajes
 import os
@@ -176,6 +176,7 @@ def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
 
     elif opcion == 2:
     # crea ventana de crear usuario
+        raiz.destroy()
         raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['recuperar_clave'])
         crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
 
@@ -287,7 +288,7 @@ def crear_interfaz(raiz, opcion, configuracion,usuario_ingresado):
             ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["crear"], command = lambda : crear_usuario(var_usuario.get(), var_clave.get(), var_opcion.get(), var_respuesta.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
 
         else:
-            ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["olvide"], command = lambda: generar_siguiente_ventana("",2,configuracion,"") ).grid(row=9, column=0, pady=10, sticky="w")
+            ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["olvide"], command = lambda: generar_siguiente_ventana(raiz,2,configuracion,"") ).grid(row=9, column=0, pady=10, sticky="w")
             ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["iniciar"], command = lambda : iniciar_sesion(var_usuario.get(), var_clave.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
 
         frame_usuarios.pack(padx=10)
@@ -306,7 +307,7 @@ def crear_interfaz(raiz, opcion, configuracion,usuario_ingresado):
         ttk.Label(frame_recuperar, text=configuracion["nombre_ventanas"]["recuperar_clave"], font=("bahnschrift", 14 ,"underline")).grid(row=0, column=0, pady=10, columnspan=2)
 
         ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["usuario"]).grid(row=1, column=0, pady=5, sticky="w")
-        ttk.Entry(frame_recuperar,textvariable = var_respuesta).grid(row=1, column=1, pady=5, sticky="e")
+        ttk.Entry(frame_recuperar,textvariable = var_usuario).grid(row=1, column=1, pady=5, sticky="e")
 
         ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["pregunta"]).grid(row=2, column=0, pady=5, sticky="w")
         ttk.OptionMenu(frame_recuperar, var_pregunta, *opciones).grid(row=2, column=1, pady=5, sticky="e")
@@ -314,7 +315,7 @@ def crear_interfaz(raiz, opcion, configuracion,usuario_ingresado):
         ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["respuesta"]).grid(row=3, column=0, pady=5, sticky="w")
         ttk.Entry(frame_recuperar,textvariable = var_respuesta).grid(row=3, column=1, pady=5, sticky="e")
 
-        ttk.Button(frame_recuperar, text=configuracion["nombre_ventanas"]["recuperar_clave"], width= 20).grid(row=6, column=1, pady=10, sticky="e")
+        ttk.Button(frame_recuperar, text=configuracion["nombre_ventanas"]["recuperar_clave"],command= lambda: olvide_contraseña(var_usuario.get(),var_pregunta.get(),var_respuesta.get()), width= 20).grid(row=6, column=1, pady=10, sticky="e")
 
         frame_recuperar.pack(padx=10)
 

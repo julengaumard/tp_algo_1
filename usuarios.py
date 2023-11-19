@@ -280,8 +280,11 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada)
         else:
             crear_nuevo_archivo_usuario(usuario_ingresado,2)
     
-    else:
-        messagebox.showerror("El usuario indicado no existe")
+    elif not verificacion:
+        messagebox.showerror("Error al intentar recuperar clave","el usuario indicado no existe")
+    
+    if not respuesta_ingresada:
+        messagebox.showerror("Error al intentar recuperar clave","No escribiste una respuesta")
 
 
 if __name__ == "__main__":
