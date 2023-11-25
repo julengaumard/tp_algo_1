@@ -2,50 +2,82 @@ from usuarios import buscar_usuario
 from tkinter import messagebox
 
 def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
+    # Agrega los mensajes al archivo.
+    # Autor: Alessandro Perez, Dominguez Lucia Juan Pablo y Julen Gaumard
 
-    # Autor: Alessandro Perez y Dominguez Lucia Juan Pablo
+    existe_destinatario = False
 
     if destinatario == '*':
-        with open('mensajes.csv', 'a') as ar_mensajes:
-                    
-            if cifrado == 3:
-                cifrado = "C"
-                clave = str(clave)
-
-                mensaje = destinatario + "," + remitente + "," + cifrado+clave + "," + mensaje_cifrado + "\n" 
-                messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
-                
-                    
-            elif cifrado == 4:
-                cifrado = "A"
-                        
-                mensaje = destinatario + "," + remitente + "," + cifrado + "," + mensaje_cifrado + "\n" 
-                messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
-        
-            ar_mensajes.write(mensaje)
+        existe_destinatario = True
 
     else:
         usuario = buscar_usuario(destinatario)
 
         if not usuario:
             messagebox.showerror("Datos incorrentos","El usuario no existe")
-
         else:
-            with open('mensajes.csv', 'a') as ar_mensajes:
-                    
-                if cifrado == 3:
-                    cifrado = "C"
-                    clave = str(clave)
+            existe_destinatario = True
 
-                    mensaje = destinatario + "," + remitente + "," + cifrado+clave + "," + mensaje_cifrado + "\n" 
-                    messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
+
+    if existe_destinatario:
+
+        with open('mensajes.csv', 'a') as ar_mensajes:
+    
+            data_cifrado = "A"
+
+            if cifrado == 3:
+                data_cifrado = "C" + str(clave)
+    
+            mensaje = destinatario + "," + remitente + "," + data_cifrado + "," + mensaje_cifrado + "\n" 
+            ar_mensajes.write(mensaje)
+            messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
+
+
+# def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
+#     # Agrega los mensajes al archivo.
+#     # Autor: Alessandro Perez y Dominguez Lucia Juan Pablo
+
+#     if destinatario == '*':
+#         with open('mensajes.csv', 'a') as ar_mensajes:
+                    
+#             if cifrado == 3:
+#                 cifrado = "C"
+#                 clave = str(clave)
+
+#                 mensaje = destinatario + "," + remitente + "," + cifrado+clave + "," + mensaje_cifrado + "\n" 
+#                 messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
                 
                     
-                elif cifrado == 4:
-                    cifrado = "A"
+#             elif cifrado == 4:
+#                 cifrado = "A"
                         
-                    mensaje = destinatario + "," + remitente + "," + cifrado + "," + mensaje_cifrado + "\n" 
-                    messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
+#                 mensaje = destinatario + "," + remitente + "," + cifrado + "," + mensaje_cifrado + "\n" 
+#                 messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
+        
+#             ar_mensajes.write(mensaje)
+
+#     else:
+#         usuario = buscar_usuario(destinatario)
+
+#         if not usuario:
+#             messagebox.showerror("Datos incorrentos","El usuario no existe")
+
+#         else:
+#             with open('mensajes.csv', 'a') as ar_mensajes:
+                    
+#                 if cifrado == 3:
+#                     cifrado = "C"
+#                     clave = str(clave)
+
+#                     mensaje = destinatario + "," + remitente + "," + cifrado+clave + "," + mensaje_cifrado + "\n" 
+#                     messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
                 
-                ar_mensajes.write(mensaje)
+                    
+#                 elif cifrado == 4:
+#                     cifrado = "A"
+                        
+#                     mensaje = destinatario + "," + remitente + "," + cifrado + "," + mensaje_cifrado + "\n" 
+#                     messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
+                
+#                 ar_mensajes.write(mensaje)
 

@@ -1,4 +1,6 @@
 def control_limite(caracter_desplazado, clave, cantidad_caracteres, limite_menor):
+    # Controla que el caracter desplazado no se exceda de los limites para la clase de carecter
+    # Autor: Julen Gaumard
 
     caracter_desplazado += clave % cantidad_caracteres
 

@@ -251,7 +251,7 @@ def crear_raiz(nombre_ventana):
     return raiz
 
 
-def crear_interfaz(raiz, opcion, configuracion,usuario_ingresado):
+def crear_interfaz(raiz, opcion, configuracion, usuario_ingresado):
     # Crea la interfaz dependiente del boton presionado
     # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
 
