@@ -20,8 +20,8 @@ def cargar_configuraciones():
             'recuperar_clave': "Recuperar contraseña",
             'cesar': "Enviar mensaje Cesar",
             'atbash': "Enviar mensaje Atbash",
-            'mensajes': "Mensajes recibidos"
-
+            'mensajes': "Mensajes recibidos",
+            'lista_ventanas': ['identificacion', 'creacion', 'recuperar_clave', 'cesar', 'atbash', 'mensajes']
         },
 
         'ventana_bienvenida': {
@@ -90,11 +90,57 @@ def cargar_configuraciones():
 
     return predeterminados
 
+def crear_raiz(nombre_ventana):
+    # Crea una ventana generica, a la cual mediante otra funcion se le agregan los elementos necesarios
+    # Autor: Julen Gaumard
+
+    raiz = Tk()
+    raiz.resizable(False,False)
+    raiz.title(nombre_ventana)
+    raiz.iconbitmap("icon.ico")
+    estilo = ttk.Style(raiz)
+    estilo.theme_use('vista')
+    return raiz
+
+def crear_usuario(nombre_user, clave, opcion, respuesta, raiz, configuracion):
+    # Hace las validaciones correspondientes y crea el usuario
+    # Autor: Julen Gaumard
+
+    if nombre_user == "" or clave == "" or respuesta == "":
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['incompleto_titulo'], configuracion['errores_manejo_usuarios']['incompleto_texto'])
+    elif buscar_usuario(nombre_user):
+        messagebox.showwarning(configuracion['errores_manejo_usuarios']['buscar_titulo'], configuracion['errores_manejo_usuarios']['buscar_texto'])
+    elif not validacion_usuario(nombre_user):
+        messagebox.showwarning(configuracion['errores_manejo_usuarios']['usuario_titulo'], configuracion['errores_manejo_usuarios']['usuario_texto'])
+    elif not validacion_clave(clave):
+        messagebox.showwarning(configuracion['errores_manejo_usuarios']['clave_titulo'], configuracion['errores_manejo_usuarios']['clave_texto'])
+    else:
+        agregar_usuario(nombre_user, clave, opcion, respuesta)
+        raiz.destroy()
+        crear_ventana_principal(configuracion,nombre_user)
+
+def iniciar_sesion(nombre_user, clave, raiz, configuracion):
+    # Chequea si el usuario existe y si la clave ingresa coincide
+    # Autor: Julen Gaumard
+
+    usuario = buscar_usuario(nombre_user)
+
+    if nombre_user == "" or clave == "":
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['incompleto_titulo'], configuracion['errores_manejo_usuarios']['incompleto_texto'])
+    elif not usuario: 
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
+    elif int(usuario[4]) > 2:
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['bloquado_titulo'], configuracion['errores_manejo_usuarios']['bloquado_texto'])
+    elif usuario[1] == clave:
+        raiz.destroy()
+        crear_ventana_principal(configuracion,nombre_user)
+    else:
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
 
 #--------------------------Ventana principal-----------------------------
 def crear_ventana_principal(configuracion,usuario_ingresado):
     # Autor: Dominguez Lucia Juan Pablo
-    #Parametros iniciales de la ventana principal
+    # Parametros iniciales de la ventana principal
 
     Ventana = crear_raiz(configuracion["nombre_ventanas"]["principal"])
     
@@ -154,43 +200,14 @@ def crear_ventana_principal(configuracion,usuario_ingresado):
     Frame_principal.pack(padx=10, pady=10)
     Ventana.mainloop()
 
-
-#--------------------------Ventana de bienvenida-----------------------------
-
 def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
     # Crea la ventana correspondiente, segun la opcion recibida.
     # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
     
-    if opcion == 0:
-        # crea ventana de inicio de sesion
+    titulo_ventana = configuracion['nombre_ventanas'][configuracion['nombre_ventanas']['lista_ventanas'][opcion]]
+    debe_crear_ventana = True
 
-        raiz.destroy()
-        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['identificacion'])
-        crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
-
-    elif opcion == 1:
-        # crea ventana de crear usuario
-        raiz.destroy()
-        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['creacion'])
-        crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
-
-    elif opcion == 2:
-    # crea ventana de crear usuario
-        raiz.destroy()
-        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['recuperar_clave'])
-        crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
-
-    elif opcion == 3:
-        # crea ventana de envio mensaje cifrado cesar
-        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['cesar'])
-        crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
-    
-    elif opcion == 4:
-        # crea ventana de envio mensaje cifrado atbash
-        raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['atbash'])
-        crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
-
-    elif opcion == 5:
+    if opcion == 5:
         # crea ventana de mensajes recibidos segun el usuario
         armar_archivo_mensajes(usuario_ingresado)
 
@@ -198,59 +215,18 @@ def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
         linea_mensajes = leer_linea(ar_mensajes)
         ar_mensajes.close()
 
-        if linea_mensajes:
-            raiz_nueva = crear_raiz(configuracion['nombre_ventanas']['mensajes'])
-            crear_interfaz(raiz_nueva, opcion, configuracion,usuario_ingresado)
-        else:
-            no_tienes_mensajes = messagebox.showinfo("No se encontraron mensajes", "No has recibido nigun mensaje")
-
-def crear_usuario(nombre_user, clave, opcion, respuesta, raiz, configuracion):
-
-    if nombre_user == "" or clave == "" or respuesta == "":
-        messagebox.showerror(configuracion['errores_manejo_usuarios']['incompleto_titulo'], configuracion['errores_manejo_usuarios']['incompleto_texto'])
-    elif buscar_usuario(nombre_user):
-        messagebox.showwarning(configuracion['errores_manejo_usuarios']['buscar_titulo'], configuracion['errores_manejo_usuarios']['buscar_texto'])
-    elif not validacion_usuario(nombre_user):
-        messagebox.showwarning(configuracion['errores_manejo_usuarios']['usuario_titulo'], configuracion['errores_manejo_usuarios']['usuario_texto'])
-    elif not validacion_clave(clave):
-        messagebox.showwarning(configuracion['errores_manejo_usuarios']['clave_titulo'], configuracion['errores_manejo_usuarios']['clave_texto'])
-    else:
-        agregar_usuario(nombre_user, clave, opcion, respuesta)
+        if not linea_mensajes:
+            debe_crear_ventana = False
+            messagebox.showinfo("No se encontraron mensajes", "No has recibido ningun mensaje")
+    
+    if opcion < 2:
         raiz.destroy()
-        crear_ventana_principal(configuracion,nombre_user)
 
-def iniciar_sesion(nombre_user, clave, raiz, configuracion):
-    # Chequea si el usuario existe y si la clave ingresa coincide
-    # Autor: Julen Gaumard
+    if debe_crear_ventana:
+        raiz_nueva = crear_raiz(titulo_ventana)
+        crear_interfaz(raiz_nueva, opcion, configuracion, usuario_ingresado)
 
-    usuario = buscar_usuario(nombre_user)
-
-    if nombre_user == "" or clave == "":
-        messagebox.showerror(configuracion['errores_manejo_usuarios']['incompleto_titulo'], configuracion['errores_manejo_usuarios']['incompleto_texto'])
-    elif not usuario: 
-        messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
-    elif int(usuario[4]) > 2:
-        messagebox.showerror(configuracion['errores_manejo_usuarios']['bloquado_titulo'], configuracion['errores_manejo_usuarios']['bloquado_texto'])
-    elif usuario[1] == clave:
-        raiz.destroy()
-        crear_ventana_principal(configuracion,nombre_user)
-    else:
-        messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
-
-
-def crear_raiz(nombre_ventana):
-    # Crea una ventana generica, a la cual mediante otra funcion se le agregan los elementos necesarios
-    # Autor: Julen Gaumard
-
-    raiz = Tk()
-    raiz.resizable(False,False)
-    raiz.title(nombre_ventana)
-    raiz.iconbitmap("icon.ico")
-    estilo = ttk.Style(raiz)
-    estilo.theme_use('vista')
-    return raiz
-
-
+# TODO: Revisar y simplificar
 def crear_interfaz(raiz, opcion, configuracion, usuario_ingresado):
     # Crea la interfaz dependiente del boton presionado
     # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
@@ -415,8 +391,6 @@ def crear_interfaz(raiz, opcion, configuracion, usuario_ingresado):
 
         frame_mensajes.pack(padx=10)
 
-
-
 def crear_ventana_bienvenida(raiz, configuracion):
     # Crea la interfaz de la pantalla de bienvenida
     # Autor: Julen Gaumard
@@ -439,7 +413,6 @@ def crear_ventana_bienvenida(raiz, configuracion):
    
     desarrollado_frame.grid(row=5, column=0, sticky="w", columnspan=2)
     frame_global.pack(padx=10, pady=10)
-
 
 def main():
     # Comienza la aplicacion, creando la ventana de bienvenida

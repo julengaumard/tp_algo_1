@@ -25,7 +25,7 @@ def buscar_mensajes(usuario):
                     mensaje_descifrado = descifrado_atbash(mensaje_cifrado)
                 
                 else:
-                    clave = cifrado[1]
+                    clave = int(cifrado.replace("C", ""))
                     mensaje_descifrado = descifrado_cesar(mensaje_cifrado, clave)
 
                 mensaje_privado = remitente + ',' + mensaje_descifrado + "\n"
@@ -38,7 +38,7 @@ def buscar_mensajes(usuario):
                     mensaje_descifrado = descifrado_atbash(mensaje_cifrado)
                 
                 else:
-                    clave = cifrado[1]
+                    clave = int(cifrado.replace("C", ""))
                     mensaje_descifrado = descifrado_cesar(mensaje_cifrado, clave)
 
                 mensaje_general = '*' + remitente + ',' + mensaje_descifrado + "\n"
