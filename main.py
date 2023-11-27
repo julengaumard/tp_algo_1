@@ -230,45 +230,10 @@ def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
 # TODO: Revisar y simplificar
 def crear_interfaz(raiz, opcion, configuracion, usuario_ingresado):
     # Crea la interfaz dependiente del boton presionado
-    # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
-
+    # Autor: Dominguez Lucia Juan Pablo
 
     if opcion < 2:
-
-        # Interfaz para el ingreso de sesion
-        frame_usuarios = ttk.Frame(raiz)
-
-        var_clave = StringVar(raiz)
-        var_opcion = StringVar(raiz)
-        var_respuesta = StringVar(raiz)
-        var_usuario = StringVar(raiz)
-
-        ttk.Label(frame_usuarios, text=configuracion["ventana_usuarios"]["ingresar"], font=("bahnschrift", 14 ,"underline")).grid(row=0, column=0, pady=10, columnspan=2)
-        
-        ttk.Label(frame_usuarios,text=configuracion["ventana_usuarios"]["usuario"]).grid(row=1, column=0, pady=5, sticky="w")
-        ttk.Entry(frame_usuarios,textvariable = var_usuario).grid(row=1, column=1, pady=5, sticky="e")
-
-        ttk.Label(frame_usuarios,text=configuracion["ventana_usuarios"]["clave"]).grid(row=3, column=0, pady=5, sticky="w")
-        ttk.Entry(frame_usuarios,textvariable = var_clave, show="*").grid(row=3, column=1, pady=5, sticky="e")
-
-        if opcion == 1:
-            # Interfaz para la creacion de usuario
-            opciones = obtener_preguntas()
-            var_opcion.set(opciones[0]) 
-            
-            ttk.Label(frame_usuarios,text=configuracion["ventana_usuarios"]["pregunta"]).grid(row=4, column=0, pady=5, sticky="w")
-            ttk.OptionMenu(frame_usuarios, var_opcion, *opciones).grid(row=4, column=1, pady=5, sticky="e")
-            
-            ttk.Label(frame_usuarios,text=configuracion["ventana_usuarios"]["respuesta"]).grid(row=5, column=0, pady=5, sticky="w")
-            ttk.Entry(frame_usuarios,textvariable = var_respuesta).grid(row=5, column=1, pady=5, sticky="e")
-
-            ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["crear"], command = lambda : crear_usuario(var_usuario.get(), var_clave.get(), var_opcion.get(), var_respuesta.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
-
-        else:
-            ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["olvide"], command = lambda: generar_siguiente_ventana(raiz,2,configuracion,"") ).grid(row=9, column=0, pady=10, sticky="w")
-            ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["iniciar"], command = lambda : iniciar_sesion(var_usuario.get(), var_clave.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
-
-        frame_usuarios.pack(padx=10)
+        crear_interfaz_indentificacion(raiz, opcion, configuracion)
 
     elif opcion == 2:
         frame_recuperar = ttk.Frame(raiz)
@@ -391,6 +356,43 @@ def crear_interfaz(raiz, opcion, configuracion, usuario_ingresado):
         cantidad_mensajes = ttk.Label(frame_cantidad,text=cant_mensaje,font=("bahnschrift",12,"bold")).grid(row=0,column=1,sticky="w")
 
         frame_mensajes.pack(padx=10)
+
+def crear_interfaz_identificacion(raiz, opcion, configuracion):
+    # Crea la interfaz tanto para el ingreso o creacion de usuario, segun corresponda
+    # Autor: Julen Gaumard
+
+    frame_usuarios = ttk.Frame(raiz)
+
+    var_clave = StringVar(raiz)
+    var_opcion = StringVar(raiz)
+    var_respuesta = StringVar(raiz)
+    var_usuario = StringVar(raiz)
+
+    ttk.Label(frame_usuarios, text=configuracion["ventana_usuarios"]["ingresar"], font=("bahnschrift", 14 ,"underline")).grid(row=0, column=0, pady=10, columnspan=2)
+    
+    ttk.Label(frame_usuarios,text=configuracion["ventana_usuarios"]["usuario"]).grid(row=1, column=0, pady=5, sticky="w")
+    ttk.Entry(frame_usuarios,textvariable = var_usuario).grid(row=1, column=1, pady=5, sticky="e")
+
+    ttk.Label(frame_usuarios,text=configuracion["ventana_usuarios"]["clave"]).grid(row=3, column=0, pady=5, sticky="w")
+    ttk.Entry(frame_usuarios,textvariable = var_clave, show="*").grid(row=3, column=1, pady=5, sticky="e")
+
+    if opcion == 1:
+        opciones = obtener_preguntas()
+        var_opcion.set(opciones[0]) 
+        
+        ttk.Label(frame_usuarios,text=configuracion["ventana_usuarios"]["pregunta"]).grid(row=4, column=0, pady=5, sticky="w")
+        ttk.OptionMenu(frame_usuarios, var_opcion, *opciones).grid(row=4, column=1, pady=5, sticky="e")
+        
+        ttk.Label(frame_usuarios,text=configuracion["ventana_usuarios"]["respuesta"]).grid(row=5, column=0, pady=5, sticky="w")
+        ttk.Entry(frame_usuarios,textvariable = var_respuesta).grid(row=5, column=1, pady=5, sticky="e")
+
+        ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["crear"], command = lambda : crear_usuario(var_usuario.get(), var_clave.get(), var_opcion.get(), var_respuesta.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
+
+    else:
+        ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["olvide"], command = lambda: generar_siguiente_ventana(raiz,2,configuracion,"") ).grid(row=9, column=0, pady=10, sticky="w")
+        ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["iniciar"], command = lambda : iniciar_sesion(var_usuario.get(), var_clave.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
+
+    frame_usuarios.pack(padx=10)
 
 def crear_ventana_bienvenida(raiz, configuracion):
     # Crea la interfaz de la pantalla de bienvenida
