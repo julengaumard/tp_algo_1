@@ -204,7 +204,8 @@ def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
     # Crea la ventana correspondiente, segun la opcion recibida.
     # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
     
-    titulo_ventana = configuracion['nombre_ventanas'][configuracion['nombre_ventanas']['lista_ventanas'][opcion]]
+    # titulo_ventana = configuracion['nombre_ventanas'][configuracion['nombre_ventanas']['lista_ventanas'][opcion]]
+    titulo_ventana = configuracion['nombre_ventanas'][list(configuracion['nombre_ventanas'].keys())[opcion + 2]]
     debe_crear_ventana = True
 
     if opcion == 5:
