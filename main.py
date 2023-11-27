@@ -233,7 +233,7 @@ def crear_interfaz(raiz, opcion, configuracion, usuario_ingresado):
     # Autor: Dominguez Lucia Juan Pablo
 
     if opcion < 2:
-        crear_interfaz_indentificacion(raiz, opcion, configuracion)
+        crear_interfaz_identificacion(raiz, opcion, configuracion)
 
     elif opcion == 2:
         frame_recuperar = ttk.Frame(raiz)
