@@ -1,7 +1,8 @@
 from tkinter import * 
 from tkinter import ttk
 from tkinter import messagebox
-from botones_cifrado import boton_atbash, boton_cesar
+from botones_cifrado import boton_atbash, boton_cesar, buscar_error_atbash, buscar_error_cesar
+from cifrados import cifrar_atbash, cifrar_cesar
 from usuarios import obtener_preguntas, buscar_usuario, validacion_usuario, validacion_clave, agregar_usuario, leer_linea, olvide_contraseña
 from mensajes import enviar_mensaje
 from mensajes_consultar import armar_archivo_mensajes
@@ -18,8 +19,7 @@ def cargar_configuraciones():
             'identificacion': "Identificación para acceso",
             'creacion': "Creacion de usuario",
             'recuperar_clave': "Recuperar contraseña",
-            'cesar': "Enviar mensaje Cesar",
-            'atbash': "Enviar mensaje Atbash",
+            'Destinatario': "Enviar Mensaje",
             'mensajes': "Mensajes recibidos",
             'lista_ventanas': ['identificacion', 'creacion', 'recuperar_clave', 'cesar', 'atbash', 'mensajes']
         },
@@ -137,6 +137,24 @@ def iniciar_sesion(nombre_user, clave, raiz, configuracion):
     else:
         messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
 
+def elejir_destinatario(usuario_ingresado,configuracion,texto,tipo,clave= False,raiz=False):
+    mensaje_cifrado = False
+
+    if tipo == "C":
+        error = buscar_error_cesar(texto,clave)
+        if not error:
+            mensaje_cifrado = cifrar_cesar(texto,int(clave))
+            
+    else:
+        error = buscar_error_atbash(texto)
+        if not error:
+            mensaje_cifrado = cifrar_atbash(texto)
+
+             
+    if mensaje_cifrado:
+        datos = [mensaje_cifrado,tipo,clave]        
+        generar_siguiente_ventana(raiz,3,configuracion,usuario_ingresado,datos)
+
 #--------------------------Ventana principal-----------------------------
 def crear_ventana_principal(configuracion,usuario_ingresado):
     # Autor: Dominguez Lucia Juan Pablo
@@ -152,7 +170,7 @@ def crear_ventana_principal(configuracion,usuario_ingresado):
 
     
     Bienvenida = ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["bienvenida"] + usuario_ingresado + "!", font= ("bahnschrift",12,"underline"), foreground="grey").grid(row=0,sticky = "w")
-    boton_Recibir_mesajes = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["recibir_mensajes"],command = lambda:generar_siguiente_ventana("", 5, configuracion,usuario_ingresado),width=20).grid(row=0,padx=10,pady=5,sticky = "e")
+    boton_recibir_mesajes = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["recibir_mensajes"],command = lambda:generar_siguiente_ventana(False, 4, configuracion,usuario_ingresado),width=20).grid(row=0,padx=10,pady=5,sticky = "e")
     Ingreso_mensaje = ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["ingresar_mensajes"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w")
     cuadro_de_ingreso_mensaje = ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=2,column=0,padx=5,pady=10)
 
@@ -194,168 +212,71 @@ def crear_ventana_principal(configuracion,usuario_ingresado):
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=9,pady=5)
 
     #Envio y recibimiento de mensajes
-    Envio_cifrado_cesar = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_cesar"],command= lambda :generar_siguiente_ventana("", 3, configuracion,usuario_ingresado),width=30).grid(row=10,padx=10,pady=5)
-    Envio_cifrado_atbash = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_atbash"],command= lambda :generar_siguiente_ventana("", 4, configuracion,usuario_ingresado), width=30).grid(row=11,padx=10,pady=5)
+    Envio_cifrado_cesar = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_cesar"],command= lambda : elejir_destinatario(usuario_ingresado,configuracion,var_texto.get(),"C",var_clave.get()),width=30).grid(row=10,padx=10,pady=5)
+    Envio_cifrado_atbash = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_atbash"],command= lambda :elejir_destinatario(usuario_ingresado,configuracion,var_texto.get(),"A"), width=30).grid(row=11,padx=10,pady=5)
 
     Frame_principal.pack(padx=10, pady=10)
     Ventana.mainloop()
 
-def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado):
+def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado = False, datos = False):
     # Crea la ventana correspondiente, segun la opcion recibida.
     # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
     
     # titulo_ventana = configuracion['nombre_ventanas'][configuracion['nombre_ventanas']['lista_ventanas'][opcion]]
-    titulo_ventana = configuracion['nombre_ventanas'][list(configuracion['nombre_ventanas'].keys())[opcion + 2]]
-    debe_crear_ventana = True
 
-    if opcion == 5:
+    if raiz:
+        raiz.destroy()
+
+    titulo_ventana = configuracion['nombre_ventanas'][list(configuracion['nombre_ventanas'].keys())[opcion + 2]]
+    raiz_nueva = crear_raiz(titulo_ventana)
+
+    if opcion < 2:
+        crear_interfaz_identificacion(raiz_nueva, opcion, configuracion)
+    
+    elif opcion == 2:
+        crear_interfaz_recuperacion(raiz_nueva,configuracion)
+    
+    elif opcion == 3:
+        crear_interfaz_destinatario(raiz_nueva,configuracion,usuario_ingresado,datos)
+        
+    else:
         # crea ventana de mensajes recibidos segun el usuario
         armar_archivo_mensajes(usuario_ingresado)
 
         ar_mensajes = open("mensajes_recibidos.csv","r")
-        linea_mensajes = leer_linea(ar_mensajes)
+        mensaje = leer_linea(ar_mensajes)
         ar_mensajes.close()
 
-        if not linea_mensajes:
-            debe_crear_ventana = False
+        if not mensaje:
             messagebox.showinfo("No se encontraron mensajes", "No has recibido ningun mensaje")
-    
-    if opcion < 2:
-        raiz.destroy()
 
-    if debe_crear_ventana:
-        raiz_nueva = crear_raiz(titulo_ventana)
-        crear_interfaz(raiz_nueva, opcion, configuracion, usuario_ingresado)
+        crear_interfaz_recibir_mensajes(raiz,configuracion)
+
 
 # TODO: Revisar y simplificar
-def crear_interfaz(raiz, opcion, configuracion, usuario_ingresado):
+def crear_interfaz_destinatario(raiz,configuracion, usuario_ingresado,datos):
     # Crea la interfaz dependiente del boton presionado
     # Autor: Dominguez Lucia Juan Pablo
-
-    if opcion < 2:
-        crear_interfaz_identificacion(raiz, opcion, configuracion)
-
-    elif opcion == 2:
-        frame_recuperar = ttk.Frame(raiz)
-
-        var_usuario = StringVar(raiz)
-        var_pregunta = StringVar(raiz)
-        var_respuesta = StringVar(raiz)
-
-        opciones = obtener_preguntas()
-        var_pregunta.set(opciones[0]) 
-
-
-        ttk.Label(frame_recuperar, text=configuracion["nombre_ventanas"]["recuperar_clave"], font=("bahnschrift", 14 ,"underline")).grid(row=0, column=0, pady=10, columnspan=2)
-
-        ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["usuario"]).grid(row=1, column=0, pady=5, sticky="w")
-        ttk.Entry(frame_recuperar,textvariable = var_usuario).grid(row=1, column=1, pady=5, sticky="e")
-
-        ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["pregunta"]).grid(row=2, column=0, pady=5, sticky="w")
-        ttk.OptionMenu(frame_recuperar, var_pregunta, *opciones).grid(row=2, column=1, pady=5, sticky="e")
-
-        ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["respuesta"]).grid(row=3, column=0, pady=5, sticky="w")
-        ttk.Entry(frame_recuperar,textvariable = var_respuesta).grid(row=3, column=1, pady=5, sticky="e")
-
-        ttk.Button(frame_recuperar, text=configuracion["nombre_ventanas"]["recuperar_clave"],command= lambda: olvide_contraseña(var_usuario.get(),var_pregunta.get(),var_respuesta.get()), width= 20).grid(row=6, column=1, pady=10, sticky="e")
-
-        frame_recuperar.pack(padx=10)
-
-    elif opcion == 3 or opcion == 4:
-        #Interfaz el envio de mensajes dependiendo del cifrado
-
-        frame_mensajes = ttk.Frame(raiz)
-        var_usuario = usuario_ingresado
-        var_destinatario = StringVar(raiz)
-        var_texto = StringVar(raiz)
-        var_clave = StringVar(raiz)
-        var_resultado = StringVar(raiz)
-
-        Ingreso_mensaje = ttk.Label(frame_mensajes,text=configuracion["ventana_principal"]["ingresar_mensajes"], font= ("bahnschrift",14,"underline")).grid(row=0,sticky = "w")
-        cuadro_de_ingreso_mensaje = ttk.Entry(frame_mensajes,textvariable=var_texto, width=50).grid(row=1,column=0,padx=5,pady=10)
-
-        ttk.Separator(frame_mensajes, orient='horizontal').grid(row=2,pady=10)
-
-        if opcion == 3:
-            #Interfaz para el cifrado cesar
-
-            frame_cesar = ttk.Frame(frame_mensajes)
-            frame_cesar.grid(row=3,column=0,sticky="w")
-
-            Titulo_cesar = ttk.Label(frame_cesar,text=configuracion["ventana_mensajes"]["cesar"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w",columnspan=2)
-            texto_aclaracion = ttk.Label(frame_cesar,text=configuracion["ventana_principal"]["clave"], font= ("bahnschrift",10)).grid(row=2,sticky = "w",padx=10,pady=10)
-            cuadro_de_ingreso_clave = ttk.Entry(frame_cesar,width=10,textvariable= var_clave).grid(row=2,column=1,pady=10)
-            boton_cifrar_cesar = ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda: boton_cesar(var_texto.get(),var_clave.get(),var_resultado,1)).grid(row=2,column=2,padx=10,pady=10)
-
-            ttk.Separator(frame_mensajes, orient='horizontal').grid(row=4,pady=5)
-
-        elif opcion == 4:
-            #Interfaz para el cifrado atbash
-
-            frame_cesar = ttk.Frame(frame_mensajes)
-            frame_cesar.grid(row=3,column=0,sticky="w")
-
-            Titulo_cesar = ttk.Label(frame_cesar,text=configuracion["ventana_mensajes"]["atbash"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w",columnspan=2)
-            boton_cifrar_atbash = ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda: boton_atbash(var_texto.get(),var_resultado)).grid(row=2,column=0,padx=10,pady=10)
-
-            ttk.Separator(frame_mensajes, orient='horizontal').grid(row=4,pady=5)
-
-        frame_resul = ttk.Frame(frame_mensajes)
-        frame_resul.grid(row=5,column=0,sticky="w")
-
-        Titulo_resultado = ttk.Label(frame_resul,text=configuracion["ventana_principal"]["resultado"][0], font= ("bahnschrift",14,"underline")).grid(row=0,sticky = "w")
-        Resultado = ttk.Label(frame_resul, font=("bahnschrift", 10), textvariable = var_resultado).grid(row=1, column=0, padx = 10, pady=5, sticky="w") 
-        var_resultado.set(configuracion["ventana_principal"]["resultado"][1])
-
-        ttk.Separator(frame_mensajes, orient='horizontal').grid(row=6,pady=5)
-
-        frame_destinatario = ttk.Frame(frame_mensajes)
-        frame_destinatario.grid(row=7,column=0,sticky="w")
-
-        Titulo_destinatario = ttk.Label(frame_destinatario,text=configuracion["ventana_mensajes"]["ingresar_destinatario"], font= ("bahnschrift",14,"underline")).grid(row=0,sticky = "w")
-        Ingrese_destinatario = ttk.Label(frame_destinatario,text=configuracion["ventana_mensajes"]["ingresar_usuario"], font= ("bahnschrift",10)).grid(row=1,column = 0 ,sticky = "w",padx=10,pady=10)
-        cuadro_de_destinatario = ttk.Entry(frame_destinatario,textvariable=var_destinatario, width=20).grid(row=1,column=1,padx=5,pady=10)
-
-        boton_enviar = ttk.Button(frame_mensajes, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario.get(),var_usuario,opcion,var_clave.get(),var_resultado.get()) ,width=12).grid(row=9,padx=10,pady=10)
-        frame_mensajes.pack(padx=10)
     
-    elif opcion == 5:
+    #Interfaz el envio de mensajes dependiendo del cifrado
 
-        #Interfaz para recibir los mensajes
-        frame_mensajes = ttk.Frame(raiz)
-        titulo_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["mensajes_recibidos"], font= ("bahnschrift",14,"underline")).grid(row=0)
-        lista_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["lista_mensajes"], font= ("bahnschrift",11,"underline")).grid(row=1,sticky="w")
+    var_usuario = usuario_ingresado
+    var_destinatario = StringVar(raiz)
+    mensaje_cifrado = datos[0]
+    opcion = datos[1]
+    clave = datos[2]
+    
 
-        with open("mensajes_recibidos.csv") as ar_mensajes:
+    frame_destinatario = ttk.Frame(raiz)
 
-            linea_mensajes = leer_linea(ar_mensajes)
+    Titulo_destinatario = ttk.Label(frame_destinatario,text=configuracion["ventana_mensajes"]["ingresar_destinatario"], font= ("bahnschrift",14,"underline")).grid(row=0,columnspan=2)
+    Ingrese_destinatario = ttk.Label(frame_destinatario,text=configuracion["ventana_mensajes"]["ingresar_usuario"], font= ("bahnschrift",10)).grid(row=1,column = 0 ,sticky = "w",padx=10,pady=10)
+    cuadro_de_destinatario = ttk.Entry(frame_destinatario,textvariable=var_destinatario, width=20).grid(row=1,column=1,padx=5,pady=10)
 
-            ult_renglon = 2
-            cant_mensaje = 0
-
-            while linea_mensajes:
-                
-                remitente,mensaje_descifrado = linea_mensajes
-
-                mensaje = remitente + ": " + mensaje_descifrado
-
-                titulo_mensajes = ttk.Label(frame_mensajes,text="-" *150, font= ("bahnschrift",12)).grid(row=ult_renglon,sticky="w")
-                mensaje_recibido = ttk.Label(frame_mensajes,text=mensaje, font= ("bahnschrift",12,"bold")).grid(row=ult_renglon+1,sticky="w")
-
-                ult_renglon += 2
-                cant_mensaje += 1
-
-                linea_mensajes = leer_linea(ar_mensajes)
-
-        os.remove("mensajes_recibidos.csv")
-
-        frame_cantidad = ttk.Frame(frame_mensajes)
-        frame_cantidad.grid(row=ult_renglon,padx=10,)
-
-        cantidad_mensajes = ttk.Label(frame_cantidad,text=configuracion["ventana_mensajes"]["cantidad_mensajes"],font=("bahnschrift",12)).grid(row=0,sticky="w")
-        cantidad_mensajes = ttk.Label(frame_cantidad,text=cant_mensaje,font=("bahnschrift",12,"bold")).grid(row=0,column=1,sticky="w")
-
-        frame_mensajes.pack(padx=10)
+    boton_enviar = ttk.Button(frame_destinatario, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario.get(),var_usuario,opcion,clave,mensaje_cifrado) ,width=12).grid(row=9,padx=10,pady=10,columnspan=2)
+    frame_destinatario.pack(padx=10)
+    
+# enviar_mensaje(var_destinatario.get(),var_usuario,opcion,var_clave.get(),var_resultado.get()
 
 def crear_interfaz_identificacion(raiz, opcion, configuracion):
     # Crea la interfaz tanto para el ingreso o creacion de usuario, segun corresponda
@@ -389,10 +310,73 @@ def crear_interfaz_identificacion(raiz, opcion, configuracion):
         ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["crear"], command = lambda : crear_usuario(var_usuario.get(), var_clave.get(), var_opcion.get(), var_respuesta.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
 
     else:
-        ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["olvide"], command = lambda: generar_siguiente_ventana(raiz,2,configuracion,"") ).grid(row=9, column=0, pady=10, sticky="w")
+        ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["olvide"], command = lambda: generar_siguiente_ventana(raiz,2,configuracion) ).grid(row=9, column=0, pady=10, sticky="w")
         ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["iniciar"], command = lambda : iniciar_sesion(var_usuario.get(), var_clave.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
 
     frame_usuarios.pack(padx=10)
+
+def crear_interfaz_recuperacion(raiz,configuracion):
+    frame_recuperar = ttk.Frame(raiz)
+
+    var_usuario = StringVar(raiz)
+    var_pregunta = StringVar(raiz)
+    var_respuesta = StringVar(raiz)
+
+    opciones = obtener_preguntas()
+    var_pregunta.set(opciones[0]) 
+
+
+    ttk.Label(frame_recuperar, text=configuracion["nombre_ventanas"]["recuperar_clave"], font=("bahnschrift", 14 ,"underline")).grid(row=0, column=0, pady=10, columnspan=2)
+
+    ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["usuario"]).grid(row=1, column=0, pady=5, sticky="w")
+    ttk.Entry(frame_recuperar,textvariable = var_usuario).grid(row=1, column=1, pady=5, sticky="e")
+
+    ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["pregunta"]).grid(row=2, column=0, pady=5, sticky="w")
+    ttk.OptionMenu(frame_recuperar, var_pregunta, *opciones).grid(row=2, column=1, pady=5, sticky="e")
+
+    ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["respuesta"]).grid(row=3, column=0, pady=5, sticky="w")
+    ttk.Entry(frame_recuperar,textvariable = var_respuesta).grid(row=3, column=1, pady=5, sticky="e")
+
+    ttk.Button(frame_recuperar, text=configuracion["nombre_ventanas"]["recuperar_clave"],command= lambda: olvide_contraseña(var_usuario.get(),var_pregunta.get(),var_respuesta.get()), width= 20).grid(row=6, column=1, pady=10, sticky="e")
+
+    frame_recuperar.pack(padx=10)
+
+def crear_interfaz_recibir_mensajes(raiz,configuracion):
+    #Interfaz para recibir los mensajes
+    frame_mensajes = ttk.Frame(raiz)
+    titulo_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["mensajes_recibidos"], font= ("bahnschrift",14,"underline")).grid(row=0)
+    lista_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["lista_mensajes"], font= ("bahnschrift",11,"underline")).grid(row=1,sticky="w")
+
+    with open("mensajes_recibidos.csv") as ar_mensajes:
+
+        linea_mensajes = leer_linea(ar_mensajes)
+
+        ult_renglon = 2
+        cant_mensaje = 0
+
+        while linea_mensajes:
+                
+            remitente,mensaje_descifrado = linea_mensajes
+
+            mensaje = remitente + ": " + mensaje_descifrado
+
+            titulo_mensajes = ttk.Label(frame_mensajes,text="-" *150, font= ("bahnschrift",12)).grid(row=ult_renglon,sticky="w")
+            mensaje_recibido = ttk.Label(frame_mensajes,text=mensaje, font= ("bahnschrift",12,"bold")).grid(row=ult_renglon+1,sticky="w")
+
+            ult_renglon += 2
+            cant_mensaje += 1
+
+            linea_mensajes = leer_linea(ar_mensajes)
+
+    os.remove("mensajes_recibidos.csv")
+
+    frame_cantidad = ttk.Frame(frame_mensajes)
+    frame_cantidad.grid(row=ult_renglon,padx=10,)
+
+    cantidad_mensajes = ttk.Label(frame_cantidad,text=configuracion["ventana_mensajes"]["cantidad_mensajes"],font=("bahnschrift",12)).grid(row=0,sticky="w")
+    cantidad_mensajes = ttk.Label(frame_cantidad,text=cant_mensaje,font=("bahnschrift",12,"bold")).grid(row=0,column=1,sticky="w")
+
+    frame_mensajes.pack(padx=10)
 
 def crear_ventana_bienvenida(raiz, configuracion):
     # Crea la interfaz de la pantalla de bienvenida
@@ -405,8 +389,8 @@ def crear_ventana_bienvenida(raiz, configuracion):
     ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['subtitulo_2']).grid(row=2, column=0, padx=5, sticky="w")
 
     botones_frame = ttk.Frame(frame_global)
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion,"")).grid(row=3, column=0, padx=5, pady=12, sticky="e")
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 0, configuracion,"")).grid(row=3, column=1, padx=5, pady=12, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion)).grid(row=3, column=0, padx=5, pady=12, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 0, configuracion)).grid(row=3, column=1, padx=5, pady=12, sticky="e")
     botones_frame.grid(row=4, column=0, sticky="e")
 
     desarrollado_frame = ttk.Frame(frame_global)
