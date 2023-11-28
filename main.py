@@ -72,6 +72,7 @@ def cargar_configuraciones():
         },
         
         'errores_manejo_usuarios': {
+            'error': "Error",
             'incompleto_titulo': "Datos incompletos",
             'incompleto_texto': "Complete los datos para continuar",
             'buscar_titulo': "Usuario Existente",
@@ -84,6 +85,9 @@ def cargar_configuraciones():
             'incorrectos_texto': "Si no se encuentra registrado debe registrarse previamente o si olvidaste la clave presiona el botón recuperar clave",
             'bloquado_titulo': "Atencion",
             'bloquado_texto': "Usuario Bloqueado",
+            'sin_respuesta': "No indicaste una respuesta",
+            'respuesta_incorrecta': "Respuesta incorrecta",
+            'recuperacion_fallida': "Respuesta incorrecta. Intenta recordar si lleva mayusculas",
         },
 
         'errores_cifrado':{
@@ -98,7 +102,14 @@ def cargar_configuraciones():
 
         'errores_mensajes':{
             'no_mensajes_titulo': "No se han encontrado mensajes",
-            'no_mensajes_texto': "No has recibido ningun mensaje",
+            'no_mensajes_texto': "No has recibido ningun mensaje", 
+        },
+
+        'exitoso':{
+            'exito': "Exito",
+            'respuesta_correcta': "Respuesta correcta",
+            'recuperacion_exitosa': "Su contraseña es ",
+            'mensaje_enviado': "Su mensaje se envio correctamente",
 
         }
 
@@ -337,7 +348,7 @@ def crear_interfaz_recuperacion(raiz, configuracion):
     ttk.Label(frame_recuperar,text=configuracion["ventana_usuarios"]["respuesta"]).grid(row=3, column=0, pady=5, sticky="w")
     ttk.Entry(frame_recuperar,textvariable = var_respuesta).grid(row=3, column=1, pady=5, sticky="e")
 
-    ttk.Button(frame_recuperar, text=configuracion["nombre_ventanas"]["recuperar_clave"],command= lambda: olvide_contraseña(var_usuario.get(),var_pregunta.get(),var_respuesta.get()), width= 20).grid(row=6, column=1, pady=10, sticky="e")
+    ttk.Button(frame_recuperar, text=configuracion["nombre_ventanas"]["recuperar_clave"],command= lambda: olvide_contraseña(var_usuario.get(),var_pregunta.get(),var_respuesta.get(),configuracion), width= 20).grid(row=6, column=1, pady=10, sticky="e")
 
     frame_recuperar.pack(padx=10)
 
@@ -360,7 +371,7 @@ def crear_interfaz_destinatario(raiz, configuracion, usuario_ingresado,datos):
     ttk.Label(frame_destinatario,text=configuracion["ventana_mensajes"]["ingresar_usuario"], font= ("bahnschrift",10)).grid(row=1,column = 0 ,sticky = "w",padx=10,pady=10)
     ttk.Entry(frame_destinatario,textvariable=var_destinatario, width=20).grid(row=1,column=1,padx=5,pady=10)
 
-    ttk.Button(frame_destinatario, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario.get(),var_usuario,opcion,clave,mensaje_cifrado) ,width=12).grid(row=9,padx=10,pady=10,columnspan=2)
+    ttk.Button(frame_destinatario, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario.get(),var_usuario,opcion,clave,mensaje_cifrado,configuracion) ,width=12).grid(row=9,padx=10,pady=10,columnspan=2)
     frame_destinatario.pack(padx=10)
 
 def crear_interfaz_recibir_mensajes(raiz, configuracion):

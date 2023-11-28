@@ -245,15 +245,13 @@ def crear_nuevo_archivo_usuario(usuario_ingresado,tipo):
     os.rename("usuario_actualizado","usuarios.csv")
 
 
-def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada):
+def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada,configuracion):
     # Verifica que la respuesta ingresada sea la correcta para devolver la contraseña, de no ser asi, agrega un intento fallido al usuario.
     # Autor: Dominguez lucia Juan Pablo
     
-    # verificacion = buscar_usuario(usuario_ingresado)
-    verificacion = True
     pregunta_ingresada = obtener_indice_preguntas(pregunta_ingresada)
 
-    if verificacion:
+    if usuario_ingresado and respuesta_ingresada:
         ar_usuarios = open("usuarios.csv","r")
         linea = leer_linea(ar_usuarios)
         usuario_encontrado = False
@@ -272,11 +270,11 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada)
                     bloqueado = True
 
                 elif respuesta == respuesta_ingresada and pregunta == pregunta_ingresada:
-                    messagebox.showinfo("Respuesta correcta","Su contraseña es " + clave)
+                    messagebox.showinfo(configuracion['exitoso']['respuesta_correcta'],configuracion['exitoso']['recuperacion_exitosa'] + clave)
 
                 else:
                     intentos_fallidos = True
-                    messagebox.showerror("Respuesta incorrecta","Respuesta incorrecta, intenta recordar si lleva mayusculas")
+                    messagebox.showerror(configuracion['errores_manejo_usuarios']['respuesta_incorrecta'],configuracion['errores_manejo_usuarios']['recuperacion_fallida'])
 
             linea = leer_linea (ar_usuarios)
         
@@ -285,15 +283,15 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada)
         if intentos_fallidos:
             crear_nuevo_archivo_usuario(usuario_ingresado,1)
         elif bloqueado:
-            messagebox.showerror("Usuario bloqueado","El usuario a sido bloqueado")
+            messagebox.showerror(configuracion['errores_manejo_usuarios']['bloqueado_titulo'],configuracion['errores_manejo_usuarios']['bloqueado_texto'])
         else:
             crear_nuevo_archivo_usuario(usuario_ingresado,2)
     
-    elif not verificacion:
-        messagebox.showerror("Error al intentar recuperar clave","el usuario indicado no existe")
+    elif not usuario_ingresado:
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['error'],configuracion['errores_manejo_usuarios']['usuario_texto'])
     
     elif not respuesta_ingresada:
-        messagebox.showerror("Error al intentar recuperar clave","No escribiste una respuesta")
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['error'],configuracion['errores_manejo_usuarios']['sin_respuesta'])
 
 
 if __name__ == "__main__":

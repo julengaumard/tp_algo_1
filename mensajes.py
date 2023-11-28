@@ -1,7 +1,7 @@
 from usuarios import buscar_usuario
 from tkinter import messagebox
 
-def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
+def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado,configuracion):
     # Agrega los mensajes al archivo.
     # Autor: Alessandro Perez, Dominguez Lucia Juan Pablo y Julen Gaumard
 
@@ -14,7 +14,7 @@ def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
         usuario = buscar_usuario(destinatario)
 
         if not usuario:
-            messagebox.showerror("Datos incorrentos","El usuario no existe")
+            messagebox.showerror(configuracion['errores_manejo_usuarios']['usuario_titulo'],configuracion['errores_manejo_usuarios']['usuario_texto'])
         else:
             existe_destinatario = True
 
@@ -30,4 +30,4 @@ def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
     
             mensaje = destinatario + "," + remitente + "," + data_cifrado + "," + mensaje_cifrado + "\n" 
             ar_mensajes.write(mensaje)
-            messagebox.showinfo("Éxito", "El mensaje se envió correctamente")
+            messagebox.showinfo(configuracion['exitoso']['exito'],configuracion['exitoso']['mensaje_enviado'])
