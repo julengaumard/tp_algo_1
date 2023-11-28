@@ -19,9 +19,8 @@ def cargar_configuraciones():
             'identificacion': "Identificación para acceso",
             'creacion': "Creacion de usuario",
             'recuperar_clave': "Recuperar contraseña",
-            'Destinatario': "Enviar Mensaje",
+            'destinatario': "Enviar Mensaje",
             'mensajes': "Mensajes recibidos",
-            'lista_ventanas': ['identificacion', 'creacion', 'recuperar_clave', 'cesar', 'atbash', 'mensajes']
         },
 
         'ventana_bienvenida': {
@@ -116,7 +115,7 @@ def crear_usuario(usuario_ingresado, clave, opcion, respuesta, raiz, configuraci
         messagebox.showwarning(configuracion['errores_manejo_usuarios']['clave_titulo'], configuracion['errores_manejo_usuarios']['clave_texto'])
     else:
         agregar_usuario(usuario_ingresado, clave, opcion, respuesta)
-        generar_siguiente_ventana(raiz,-1,configuracion,usuario_ingresado)
+        generar_ventana(raiz,'principal',configuracion,usuario_ingresado)
 
 def iniciar_sesion(usuario_ingresado, clave, raiz, configuracion):
     # Chequea si el usuario existe y si la clave ingresa coincide
@@ -131,7 +130,7 @@ def iniciar_sesion(usuario_ingresado, clave, raiz, configuracion):
     elif int(usuario[4]) > 2:
         messagebox.showerror(configuracion['errores_manejo_usuarios']['bloquado_titulo'], configuracion['errores_manejo_usuarios']['bloquado_texto'])
     elif usuario[1] == clave:
-        generar_siguiente_ventana(raiz,-1,configuracion,usuario_ingresado)
+        generar_ventana(raiz,'principal',configuracion,usuario_ingresado)
     else:
         messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
 
@@ -154,9 +153,49 @@ def elejir_destinatario(usuario_ingresado,configuracion,texto,tipo,clave= False,
              
     if mensaje_cifrado:
         datos = [mensaje_cifrado,tipo,clave]        
-        generar_siguiente_ventana(raiz,3,configuracion,usuario_ingresado,datos)
+        generar_ventana(False, "destinatario", configuracion, usuario_ingresado, datos)
 
-#--------------------------Ventana principal-----------------------------
+#--------------------------Funciones Ventanas-----------------------------
+def generar_ventana(raiz, opcion, configuracion, usuario_ingresado = False, datos = False):
+    # Crea la ventana correspondiente, segun la opcion recibida.
+    # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
+    
+    if raiz:
+        raiz.destroy()
+    
+    titulo_ventana = configuracion['nombre_ventanas'][opcion]
+    raiz_nueva = crear_raiz(titulo_ventana)
+
+    if opcion == "bienvenida":
+        crear_ventana_bienvenida(raiz_nueva, configuracion)
+
+    elif opcion == "principal":
+        crear_ventana_principal(raiz_nueva, configuracion, usuario_ingresado)
+
+    elif opcion == "identificacion" or opcion == "creacion":
+        crear_interfaz_identificacion(raiz_nueva, opcion, configuracion)
+    
+    elif opcion == "recuperar_clave":
+        crear_interfaz_recuperacion(raiz_nueva, configuracion)
+    
+    elif opcion == "destinatario":
+        crear_interfaz_destinatario(raiz_nueva, configuracion, usuario_ingresado, datos)
+        
+    elif opcion == "mensajes":
+        # crea ventana de mensajes recibidos segun el usuario
+        armar_archivo_mensajes(usuario_ingresado)
+
+        ar_mensajes = open("mensajes_recibidos.csv","r")
+        mensaje = leer_linea(ar_mensajes)
+        ar_mensajes.close()
+
+        if not mensaje:
+            messagebox.showinfo("No se encontraron mensajes", "No has recibido ningun mensaje")
+
+        crear_interfaz_recibir_mensajes(raiz_nueva,configuracion)
+
+    raiz_nueva.mainloop()
+
 def crear_ventana_principal(raiz,configuracion,usuario_ingresado):
     # Autor: Dominguez Lucia Juan Pablo
     # Parametros iniciales de la ventana principal
@@ -169,7 +208,7 @@ def crear_ventana_principal(raiz,configuracion,usuario_ingresado):
 
     
     Bienvenida = ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["bienvenida"] + usuario_ingresado + "!", font= ("bahnschrift",12,"underline"), foreground="grey").grid(row=0,sticky = "w")
-    boton_recibir_mesajes = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["recibir_mensajes"],command = lambda:generar_siguiente_ventana(False, 4, configuracion,usuario_ingresado),width=20).grid(row=0,padx=10,pady=5,sticky = "e")
+    boton_recibir_mesajes = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["recibir_mensajes"],command = lambda:generar_ventana(False, 'mensajes', configuracion,usuario_ingresado),width=20).grid(row=0,padx=10,pady=5,sticky = "e")
     Ingreso_mensaje = ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["ingresar_mensajes"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w")
     cuadro_de_ingreso_mensaje = ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=2,column=0,padx=5,pady=10)
 
@@ -217,45 +256,7 @@ def crear_ventana_principal(raiz,configuracion,usuario_ingresado):
     Frame_principal.pack(padx=10, pady=10)
     raiz.mainloop()
 
-def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado = False, datos = False):
-    # Crea la ventana correspondiente, segun la opcion recibida.
-    # Autor: Julen Gaumard y Dominguez Lucia Juan Pablo
-    
-    # titulo_ventana = configuracion['nombre_ventanas'][configuracion['nombre_ventanas']['lista_ventanas'][opcion]]
-    if raiz:
-        raiz.destroy()
-    
-    titulo_ventana = configuracion['nombre_ventanas'][list(configuracion['nombre_ventanas'].keys())[opcion + 2]]
-    raiz_nueva = crear_raiz(titulo_ventana)
-
-    if opcion == -1:
-        crear_ventana_principal(raiz_nueva,configuracion,usuario_ingresado)
-
-    elif opcion >= 0 and opcion < 2:
-        crear_interfaz_identificacion(raiz_nueva, opcion, configuracion)
-    
-    elif opcion == 2:
-        crear_interfaz_recuperacion(raiz_nueva,configuracion)
-    
-    elif opcion == 3:
-        crear_interfaz_destinatario(raiz_nueva,configuracion,usuario_ingresado,datos)
-        
-    elif opcion == 4:
-        # crea ventana de mensajes recibidos segun el usuario
-        armar_archivo_mensajes(usuario_ingresado)
-
-        ar_mensajes = open("mensajes_recibidos.csv","r")
-        mensaje = leer_linea(ar_mensajes)
-        ar_mensajes.close()
-
-        if not mensaje:
-            messagebox.showinfo("No se encontraron mensajes", "No has recibido ningun mensaje")
-
-        crear_interfaz_recibir_mensajes(raiz_nueva,configuracion)
-
-
-# TODO: Revisar y simplificar
-def crear_interfaz_destinatario(raiz,configuracion, usuario_ingresado,datos):
+def crear_interfaz_destinatario(raiz, configuracion, usuario_ingresado,datos):
     # Crea la interfaz dependiente del boton presionado
     # Autor: Dominguez Lucia Juan Pablo
     
@@ -277,8 +278,6 @@ def crear_interfaz_destinatario(raiz,configuracion, usuario_ingresado,datos):
     boton_enviar = ttk.Button(frame_destinatario, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario.get(),var_usuario,opcion,clave,mensaje_cifrado) ,width=12).grid(row=9,padx=10,pady=10,columnspan=2)
     frame_destinatario.pack(padx=10)
     
-# enviar_mensaje(var_destinatario.get(),var_usuario,opcion,var_clave.get(),var_resultado.get()
-
 def crear_interfaz_identificacion(raiz, opcion, configuracion):
     # Crea la interfaz tanto para el ingreso o creacion de usuario, segun corresponda
     # Autor: Julen Gaumard
@@ -298,7 +297,7 @@ def crear_interfaz_identificacion(raiz, opcion, configuracion):
     ttk.Label(frame_usuarios,text=configuracion["ventana_usuarios"]["clave"]).grid(row=3, column=0, pady=5, sticky="w")
     ttk.Entry(frame_usuarios,textvariable = var_clave, show="*").grid(row=3, column=1, pady=5, sticky="e")
 
-    if opcion == 1:
+    if opcion == "creacion":
         opciones = obtener_preguntas()
         var_opcion.set(opciones[0]) 
         
@@ -311,12 +310,12 @@ def crear_interfaz_identificacion(raiz, opcion, configuracion):
         ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["crear"], command = lambda : crear_usuario(var_usuario.get(), var_clave.get(), var_opcion.get(), var_respuesta.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
 
     else:
-        ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["olvide"], command = lambda: generar_siguiente_ventana(raiz,2,configuracion) ).grid(row=9, column=0, pady=10, sticky="w")
+        ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["olvide"], command = lambda: generar_ventana(False, "recuperar_clave", configuracion) ).grid(row=9, column=0, pady=10, sticky="w")
         ttk.Button(frame_usuarios, text=configuracion["ventana_usuarios"]["iniciar"], command = lambda : iniciar_sesion(var_usuario.get(), var_clave.get(), raiz, configuracion)).grid(row=9, column=1, pady=10, sticky="e")
 
     frame_usuarios.pack(padx=10)
 
-def crear_interfaz_recuperacion(raiz,configuracion):
+def crear_interfaz_recuperacion(raiz, configuracion):
     # Autor: Dominguez Lucia Juan Pablo
     # Crea la interfaz para la recuperacion de contraseña
     frame_recuperar = ttk.Frame(raiz)
@@ -344,7 +343,7 @@ def crear_interfaz_recuperacion(raiz,configuracion):
 
     frame_recuperar.pack(padx=10)
 
-def crear_interfaz_recibir_mensajes(raiz,configuracion):
+def crear_interfaz_recibir_mensajes(raiz, configuracion):
    # Autor: Dominguez Lucia Juan Pablo
    # Crea la interfaz para recibir los mensajes
     frame_mensajes = ttk.Frame(raiz)
@@ -393,8 +392,8 @@ def crear_ventana_bienvenida(raiz, configuracion):
     ttk.Label(frame_global,text=configuracion['ventana_bienvenida']['subtitulo_2']).grid(row=2, column=0, padx=5, sticky="w")
 
     botones_frame = ttk.Frame(frame_global)
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_siguiente_ventana(raiz, 1, configuracion)).grid(row=3, column=0, padx=5, pady=12, sticky="e")
-    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_siguiente_ventana(raiz, 0, configuracion)).grid(row=3, column=1, padx=5, pady=12, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['crear'], command = lambda : generar_ventana(raiz, 'creacion', configuracion)).grid(row=3, column=0, padx=5, pady=12, sticky="e")
+    ttk.Button(botones_frame, text=configuracion['ventana_usuarios']['ingresar'], command = lambda : generar_ventana(raiz, 'identificacion', configuracion)).grid(row=3, column=1, padx=5, pady=12, sticky="e")
     botones_frame.grid(row=4, column=0, sticky="e")
 
     desarrollado_frame = ttk.Frame(frame_global)
@@ -409,8 +408,6 @@ def main():
     # Comienza la aplicacion, creando la ventana de bienvenida
     # Autor: Julen Gaumard
     configuracion = cargar_configuraciones()
-    raiz = crear_raiz(configuracion['nombre_ventanas']['bienvenida'])
-    crear_ventana_bienvenida(raiz, configuracion)
-    raiz.mainloop()
+    generar_ventana(False, "bienvenida", configuracion)
 
 main()
