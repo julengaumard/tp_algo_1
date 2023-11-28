@@ -167,10 +167,10 @@ def generar_ventana(raiz, opcion, configuracion, usuario_ingresado = False, dato
     raiz_nueva = crear_raiz(titulo_ventana)
 
     if opcion == "bienvenida":
-        crear_ventana_bienvenida(raiz_nueva, configuracion)
+        crear_interfaz_bienvenida(raiz_nueva, configuracion)
 
     elif opcion == "principal":
-        crear_ventana_principal(raiz_nueva, configuracion, usuario_ingresado)
+        crear_interfaz_principal(raiz_nueva, configuracion, usuario_ingresado)
 
     elif opcion == "identificacion" or opcion == "creacion":
         crear_interfaz_identificacion(raiz_nueva, opcion, configuracion)
@@ -196,7 +196,7 @@ def generar_ventana(raiz, opcion, configuracion, usuario_ingresado = False, dato
 
     raiz_nueva.mainloop()
 
-def crear_ventana_principal(raiz,configuracion,usuario_ingresado):
+def crear_interfaz_principal(raiz,configuracion,usuario_ingresado):
     # Autor: Dominguez Lucia Juan Pablo
     # Parametros iniciales de la ventana principal
     
@@ -381,7 +381,7 @@ def crear_interfaz_recibir_mensajes(raiz, configuracion):
 
     frame_mensajes.pack(padx=10)
 
-def crear_ventana_bienvenida(raiz, configuracion):
+def crear_interfaz_bienvenida(raiz, configuracion):
     # Crea la interfaz de la pantalla de bienvenida
     # Autor: Julen Gaumard
 
