@@ -1,44 +1,44 @@
 from cifrados import cifrar_atbash, cifrar_cesar
 from tkinter import messagebox
 
-def buscar_error_atbash(texto): 
+def buscar_error_atbash(texto,configuracion): 
     # Autor: Dominguez Lucia Juan Pablo
     error = False
     if texto == "":
-        messagebox.showerror("Datos incompletos","Debes ingresar un texto y una clave")
+        messagebox.showerror(configuracion['errores_cifrado']['datos_incompletos'],configuracion['errores_cifrado']['error_texto'])
         error = True
 
     return error
 
-def buscar_error_cesar(texto,clave): 
+def buscar_error_cesar(texto,clave,configuracion): 
     # Autor: Dominguez Lucia Juan Pablo
     error = False
     if texto == "" and clave == "":
-        messagebox.showerror("Datos incompletos","Debes ingresar un texto y una clave")
+        messagebox.showerror(configuracion['errores_cifrado']['datos_incompletos'],configuracion['errores_cifrado']['error_texto_clave'])
         error = True
     elif texto == "" and clave != "":
-        messagebox.showerror("Datos incompletos","Debes ingresar un texto")
+        messagebox.showerror(configuracion['errores_cifrado']['datos_incompletos'],configuracion['errores_cifrado']['error_texto'])
         error = True
     elif texto != "" and clave == "":
-        messagebox.showerror("Datos incompletos","Debes ingresar una clave")
+        messagebox.showerror(configuracion['errores_cifrado']['datos_incompletos'],configuracion['errores_cifrado']['error_clave'][0])
         error = True
     elif not clave.isnumeric():
-        messagebox.showerror("Datos incorrectos","la clave debe ser numerica")
+        messagebox.showerror(configuracion['errores_cifrado']['datos_incorrectos'],configuracion['errores_cifrado']['error_clave'][1])
         error = True
     return error
 
-def boton_atbash(texto,resultado):
+def boton_atbash(texto,resultado,configuracion):
     # Autor: Dominguez Lucia Juan Pablo
-    error = buscar_error_atbash(texto)
+    error = buscar_error_atbash(texto,configuracion)
     if error == False:
         cifrar = cifrar_atbash(texto)
 
         resultado.set(cifrar)
 
-def boton_cesar(texto,clave,resultado,boton):
+def boton_cesar(texto,clave,resultado,boton,configuracion):
     # Autor: Dominguez Lucia Juan Pablo
 
-    error = buscar_error_cesar(texto,clave)
+    error = buscar_error_cesar(texto,clave,configuracion)
     if error == False:
         if boton == 1:
             cifrar = cifrar_cesar(texto,int(clave))

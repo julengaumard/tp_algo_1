@@ -87,6 +87,11 @@ def cargar_configuraciones():
         },
 
         'errores_cifrado':{
+            'datos_incompletos': "Datos incompletos",
+            'datos_incorrectos': "Datos incorrectos",
+            'error_texto_clave': "Debes ingresar un texto y una clave",
+            'error_texto': "Debes ingresar un texto",
+            'error_clave': ["Debes ingresar una clave","la clave debe ser numerica"],
             'contiene_coma_titulo': "Mensaje No valido",
             'contiene_coma_texto': "El mensaje debe contener comas ',' para ser enviado."
         },
@@ -153,12 +158,12 @@ def elegir_destinatario(usuario_ingresado,configuracion,texto,tipo,clave= False,
     mensaje_cifrado = False
 
     if tipo == "C":
-        error = buscar_error_cesar(texto,clave)
+        error = buscar_error_cesar(texto,clave,configuracion)
         if not error:
             mensaje_cifrado = cifrar_cesar(texto,int(clave))
             
     else:
-        error = buscar_error_atbash(texto)
+        error = buscar_error_atbash(texto,configuracion)
         if not error:
             mensaje_cifrado = cifrar_atbash(texto)
 
@@ -238,8 +243,8 @@ def crear_interfaz_principal(raiz,configuracion,usuario_ingresado):
     ttk.Label(frame_cesar,text=configuracion["ventana_principal"]["cesar"], font= ("bahnschrift",11,"underline")).grid(row=1,sticky = "w",columnspan=2)
     ttk.Label(frame_cesar,text=configuracion["ventana_principal"]["clave"], font= ("bahnschrift",10)).grid(row=2,sticky = "w",padx=10,pady=10)
     ttk.Entry(frame_cesar,width=10,textvariable= var_clave).grid(row=2,column=1,pady=10)
-    ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda: boton_cesar(var_texto.get(),var_clave.get(),var_resultado,1)).grid(row=2,column=2,padx=10,pady=10)
-    ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["descifrar"],width=8,command= lambda: boton_cesar(var_texto.get(),var_clave.get(),var_resultado,2)).grid(row=2,column=3,pady=10)
+    ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda: boton_cesar(var_texto.get(),var_clave.get(),var_resultado,1,configuracion)).grid(row=2,column=2,padx=10,pady=10)
+    ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["descifrar"],width=8,command= lambda: boton_cesar(var_texto.get(),var_clave.get(),var_resultado,2,configuracion)).grid(row=2,column=3,pady=10)
 
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=5,pady=10)
 
@@ -249,8 +254,8 @@ def crear_interfaz_principal(raiz,configuracion,usuario_ingresado):
     frame_atbash.grid(row=6,column=0,sticky="w")
 
     ttk.Label(frame_atbash,text= configuracion["ventana_principal"]["atbash"], font= ("bahnschrift",11,"underline")).grid(row=1,sticky = "w",columnspan=2)
-    ttk.Button(frame_atbash, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda : boton_atbash(var_texto.get(),var_resultado)).grid(row=2,column=0,padx=10,pady=10)
-    ttk.Button(frame_atbash, text=configuracion["ventana_principal"]["descifrar"],width=8,command= lambda : boton_atbash(var_texto.get(),var_resultado)).grid(row=2,column=1,pady=10)
+    ttk.Button(frame_atbash, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda : boton_atbash(var_texto.get(),var_resultado,configuracion)).grid(row=2,column=0,padx=10,pady=10)
+    ttk.Button(frame_atbash, text=configuracion["ventana_principal"]["descifrar"],width=8,command= lambda : boton_atbash(var_texto.get(),var_resultado,configuracion)).grid(row=2,column=1,pady=10)
 
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=7,pady=10)
 
