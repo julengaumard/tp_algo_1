@@ -23,10 +23,10 @@ def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado):
 
         with open('mensajes.csv', 'a') as ar_mensajes:
     
-            data_cifrado = "A"
+            data_cifrado = cifrado
 
-            if cifrado == 3:
-                data_cifrado = "C" + str(clave)
+            if cifrado == "C":
+                data_cifrado = cifrado + str(clave)
     
             mensaje = destinatario + "," + remitente + "," + data_cifrado + "," + mensaje_cifrado + "\n" 
             ar_mensajes.write(mensaje)

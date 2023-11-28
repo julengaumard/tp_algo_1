@@ -138,6 +138,9 @@ def iniciar_sesion(nombre_user, clave, raiz, configuracion):
         messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
 
 def elejir_destinatario(usuario_ingresado,configuracion,texto,tipo,clave= False,raiz=False):
+    # Autor: Dominguez Lucia Juan Pablo
+    # Cifra el mensaje, y genera ventana para ingresar destinatario
+
     mensaje_cifrado = False
 
     if tipo == "C":
@@ -250,7 +253,7 @@ def generar_siguiente_ventana(raiz, opcion, configuracion,usuario_ingresado = Fa
         if not mensaje:
             messagebox.showinfo("No se encontraron mensajes", "No has recibido ningun mensaje")
 
-        crear_interfaz_recibir_mensajes(raiz,configuracion)
+        crear_interfaz_recibir_mensajes(raiz_nueva,configuracion)
 
 
 # TODO: Revisar y simplificar
@@ -316,6 +319,8 @@ def crear_interfaz_identificacion(raiz, opcion, configuracion):
     frame_usuarios.pack(padx=10)
 
 def crear_interfaz_recuperacion(raiz,configuracion):
+    # Autor: Dominguez Lucia Juan Pablo
+    # Crea la interfaz para la recuperacion de contraseña
     frame_recuperar = ttk.Frame(raiz)
 
     var_usuario = StringVar(raiz)
@@ -342,7 +347,8 @@ def crear_interfaz_recuperacion(raiz,configuracion):
     frame_recuperar.pack(padx=10)
 
 def crear_interfaz_recibir_mensajes(raiz,configuracion):
-    #Interfaz para recibir los mensajes
+   # Autor: Dominguez Lucia Juan Pablo
+   # Crea la interfaz para recibir los mensajes
     frame_mensajes = ttk.Frame(raiz)
     titulo_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["mensajes_recibidos"], font= ("bahnschrift",14,"underline")).grid(row=0)
     lista_mensajes = ttk.Label(frame_mensajes,text=configuracion["ventana_mensajes"]["lista_mensajes"], font= ("bahnschrift",11,"underline")).grid(row=1,sticky="w")
