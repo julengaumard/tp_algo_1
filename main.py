@@ -134,7 +134,7 @@ def iniciar_sesion(usuario_ingresado, clave, raiz, configuracion):
     else:
         messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
 
-def elejir_destinatario(usuario_ingresado,configuracion,texto,tipo,clave= False,raiz=False):
+def elegir_destinatario(usuario_ingresado,configuracion,texto,tipo,clave= False,raiz=False):
     # Autor: Dominguez Lucia Juan Pablo
     # Cifra el mensaje, y genera ventana para ingresar destinatario
 
@@ -250,8 +250,8 @@ def crear_interfaz_principal(raiz,configuracion,usuario_ingresado):
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=9,pady=5)
 
     #Envio y recibimiento de mensajes
-    Envio_cifrado_cesar = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_cesar"],command= lambda : elejir_destinatario(usuario_ingresado,configuracion,var_texto.get(),"C",var_clave.get()),width=30).grid(row=10,padx=10,pady=5)
-    Envio_cifrado_atbash = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_atbash"],command= lambda :elejir_destinatario(usuario_ingresado,configuracion,var_texto.get(),"A"), width=30).grid(row=11,padx=10,pady=5)
+    Envio_cifrado_cesar = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_cesar"],command= lambda : elegir_destinatario(usuario_ingresado,configuracion,var_texto.get(),"C",var_clave.get()),width=30).grid(row=10,padx=10,pady=5)
+    Envio_cifrado_atbash = ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_atbash"],command= lambda :elegir_destinatario(usuario_ingresado,configuracion,var_texto.get(),"A"), width=30).grid(row=11,padx=10,pady=5)
 
     Frame_principal.pack(padx=10, pady=10)
     raiz.mainloop()
