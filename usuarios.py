@@ -189,7 +189,7 @@ def agregar_usuario(nombre_usuario, clave, opcion, respuesta):
         # indice_pregunta = preguntas.index(opcion)
         indice_pregunta = obtener_indice_preguntas(opcion)
 
-        usuario = nombre_usuario + "," + clave + "," + str(indice_pregunta) + "," + respuesta + "," + "0" "\n"
+        usuario = nombre_usuario + "," + clave + "," + str(indice_pregunta) + "," + respuesta + "," + "0" + "\n"
 
         ar_usuarios.write(usuario)
 

@@ -83,6 +83,11 @@ def cargar_configuraciones():
             'crear': "Crear Usuario",
             'olvide': "Olvide Clave",
             'iniciar': "Ingresar"
+        },
+
+        'errores_cifrado':{
+            'contiene_coma_titulo': "Mensaje No valido",
+            'contiene_coma_texto': "El mensaje no puede contener comas ',' para ser enviado."
         }
 
     }
@@ -150,7 +155,10 @@ def elegir_destinatario(usuario_ingresado,configuracion,texto,tipo,clave= False,
         if not error:
             mensaje_cifrado = cifrar_atbash(texto)
 
-             
+    if not mensaje_cifrado == False and "," in mensaje_cifrado:
+        messagebox.showerror(configuracion['errores_cifrado']['contiene_coma_titulo'], configuracion['errores_cifrado']['contiene_coma_texto'])
+        mensaje_cifrado = False
+
     if mensaje_cifrado:
         datos = [mensaje_cifrado,tipo,clave]        
         generar_ventana(False, "destinatario", configuracion, usuario_ingresado, datos)
