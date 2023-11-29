@@ -4,7 +4,7 @@ from tkinter import messagebox
 from botones_cifrado import boton_atbash, boton_cesar, buscar_error_atbash, buscar_error_cesar
 from cifrados import cifrar_atbash, cifrar_cesar
 from usuarios import obtener_preguntas, buscar_usuario, validacion_usuario, validacion_clave, agregar_usuario, leer_linea, olvide_contraseña
-from mensajes import enviar_mensaje
+from mensajes import enviar_mensaje, es_usuario_valido
 from mensajes_consultar import armar_archivo_mensajes
 import os
 
@@ -21,6 +21,7 @@ def cargar_configuraciones():
             'recuperar_clave': "Recuperar contraseña",
             'destinatario': "Enviar Mensaje",
             'mensajes': "Mensajes recibidos",
+            'ingresar_mensaje': "Ingresar mensaje a enviar"
         },
 
         'ventana_bienvenida': {
@@ -33,7 +34,7 @@ def cargar_configuraciones():
 
         'ventana_principal': {
             'bienvenida' : "Bienvenido ",
-            'ingresar_mensajes' : "\nIngrese mesaje para decifrar:",
+            'ingresar_mensajes' : "\nIngrese mensaje para cifrar:",
             'cesar':"Cifrado cesar",
             'atbash':"Cifrado Atbash",
             'resultado':["Resultado:","el resultado se mostrara aqui"],
@@ -67,8 +68,15 @@ def cargar_configuraciones():
             'mensajes_recibidos' : "Mensajes recibidos",
             'lista_mensajes' : "lista de mensajes:",
             'no_mensajes' : "no tienes mensajes recibidos",
-            'cantidad_mensajes':"Total de mensajes recibidos: "
-        
+            'cantidad_mensajes':"Total de mensajes recibidos: ",
+            'escribir_mensaje': "Ingresar Mensaje"
+        },
+
+        'ventana_envio': {
+            'enviar_a' : "Se enviara a ",
+            'ingresar_mensajes' : "\nIngrese mensaje para enviar:",
+            'enviar' : "Enviar ",
+            'clave':"Clave:",
         },
         
         'errores_manejo_usuarios': {
@@ -162,13 +170,22 @@ def iniciar_sesion(usuario_ingresado, clave, raiz, configuracion):
     else:
         messagebox.showerror(configuracion['errores_manejo_usuarios']['incorrectos_titulo'], configuracion['errores_manejo_usuarios']['incorrectos_texto'])
 
-def elegir_destinatario(usuario_ingresado,configuracion,texto,tipo,clave= False,raiz=False):
+def proceder_con_envio(raiz, configuracion, usuario_ingresado, destinatario, tipo):
+    # Comprueba si el destinatario es valido y genera la ventana para ingresar el mensaje a enviar
+    # Autor: Julen Gaumard
+
+    if es_usuario_valido(destinatario, configuracion):
+
+        datos = {'destinatario': destinatario, 'cifrado': tipo}
+        generar_ventana(raiz, "ingresar_mensaje", configuracion, usuario_ingresado, datos)
+
+def procesar_envio(usuario_ingresado,configuracion,texto,cifrado,clave,destinatario, raiz):
     # Autor: Dominguez Lucia Juan Pablo
-    # Cifra el mensaje, y genera ventana para ingresar destinatario
+    # Cifra el mensaje, y procesa el envio
 
     mensaje_cifrado = False
 
-    if tipo == "C":
+    if cifrado == "C":
         error = buscar_error_cesar(texto,clave,configuracion)
         if not error:
             mensaje_cifrado = cifrar_cesar(texto,int(clave))
@@ -183,8 +200,8 @@ def elegir_destinatario(usuario_ingresado,configuracion,texto,tipo,clave= False,
         mensaje_cifrado = False
 
     if mensaje_cifrado:
-        datos = [mensaje_cifrado,tipo,clave]        
-        generar_ventana(False, "destinatario", configuracion, usuario_ingresado, datos)
+        raiz.destroy()       
+        enviar_mensaje(destinatario,usuario_ingresado,cifrado,clave,mensaje_cifrado,configuracion)
 
 #--------------------------Funciones Ventanas-----------------------------
 def generar_ventana(raiz, opcion, configuracion, usuario_ingresado = False, datos = False):
@@ -211,6 +228,9 @@ def generar_ventana(raiz, opcion, configuracion, usuario_ingresado = False, dato
     
     elif opcion == "destinatario":
         crear_interfaz_destinatario(raiz_nueva, configuracion, usuario_ingresado, datos)
+
+    elif opcion == "ingresar_mensaje":
+        crear_interfaz_ingreso_mensaje(raiz_nueva, configuracion, usuario_ingresado, datos)
         
     elif opcion == "mensajes":
         # Primero chequea que existan mensajes para el usuario, luego genera la interfaz
@@ -281,11 +301,10 @@ def crear_interfaz_principal(raiz,configuracion,usuario_ingresado):
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=9,pady=5)
 
     #Envio y recibimiento de mensajes
-    ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_cesar"],command= lambda : elegir_destinatario(usuario_ingresado,configuracion,var_texto.get(),"C",var_clave.get()),width=30).grid(row=10,padx=10,pady=5)
-    ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_atbash"],command= lambda :elegir_destinatario(usuario_ingresado,configuracion,var_texto.get(),"A"), width=30).grid(row=11,padx=10,pady=5)
+    ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_cesar"],command= lambda : generar_ventana(False, 'destinatario', configuracion,usuario_ingresado, "C"),width=30).grid(row=10,padx=10,pady=5)
+    ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["enviar_atbash"],command= lambda : generar_ventana(False, 'destinatario', configuracion,usuario_ingresado, "A"), width=30).grid(row=11,padx=10,pady=5)
 
     Frame_principal.pack(padx=10, pady=10)
-    raiz.mainloop()
     
 def crear_interfaz_identificacion(raiz, opcion, configuracion):
     # Crea la interfaz tanto para el ingreso o creacion de usuario, segun corresponda
@@ -352,26 +371,19 @@ def crear_interfaz_recuperacion(raiz, configuracion):
 
     frame_recuperar.pack(padx=10)
 
-def crear_interfaz_destinatario(raiz, configuracion, usuario_ingresado,datos):
+def crear_interfaz_destinatario(raiz, configuracion, usuario_ingresado, tipo):
     # Crea la interfaz dependiente del boton presionado
     # Autor: Dominguez Lucia Juan Pablo
     
-    #Interfaz el envio de mensajes dependiendo del cifrado
-
-    var_usuario = usuario_ingresado
     var_destinatario = StringVar(raiz)
-    mensaje_cifrado = datos[0]
-    opcion = datos[1]
-    clave = datos[2]
-    
-
     frame_destinatario = ttk.Frame(raiz)
 
     ttk.Label(frame_destinatario,text=configuracion["ventana_mensajes"]["ingresar_destinatario"], font= ("bahnschrift",14,"underline")).grid(row=0,columnspan=2)
     ttk.Label(frame_destinatario,text=configuracion["ventana_mensajes"]["ingresar_usuario"], font= ("bahnschrift",10)).grid(row=1,column = 0 ,sticky = "w",padx=10,pady=10)
     ttk.Entry(frame_destinatario,textvariable=var_destinatario, width=20).grid(row=1,column=1,padx=5,pady=10)
 
-    ttk.Button(frame_destinatario, text=configuracion["ventana_mensajes"]["enviar"],command= lambda: enviar_mensaje(var_destinatario.get(),var_usuario,opcion,clave,mensaje_cifrado,configuracion) ,width=12).grid(row=9,padx=10,pady=10,columnspan=2)
+    ttk.Button(frame_destinatario, text=configuracion["ventana_mensajes"]["escribir_mensaje"], command = lambda: proceder_con_envio(raiz, configuracion, usuario_ingresado, var_destinatario.get(), tipo)).grid(row=9,padx=10,pady=10,columnspan=2)
+
     frame_destinatario.pack(padx=10)
 
 def crear_interfaz_recibir_mensajes(raiz, configuracion):
@@ -411,6 +423,37 @@ def crear_interfaz_recibir_mensajes(raiz, configuracion):
     ttk.Label(frame_cantidad,text=cant_mensaje,font=("bahnschrift",12,"bold")).grid(row=0,column=1,sticky="w")
 
     frame_mensajes.pack(padx=10)
+
+def crear_interfaz_ingreso_mensaje(raiz,configuracion,usuario_ingresado, datos):
+    # Autor: Julen Gaumard
+    # Genera la ventana que solicita el mensaje a enviar
+    
+    destinatario = datos['destinatario']
+    if destinatario == "*":
+        destinatario = "todos"
+
+    Frame_principal = ttk.Frame(raiz)
+
+    var_texto = StringVar(raiz)
+    var_clave = StringVar(raiz)
+
+    ttk.Label(Frame_principal,text=configuracion["ventana_envio"]["enviar_a"] + destinatario, font= ("bahnschrift",12,"underline"), foreground="grey").grid(row=0,sticky = "w")
+    ttk.Label(Frame_principal,text=configuracion["ventana_envio"]["ingresar_mensajes"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w")
+    ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=2,column=0,padx=5,pady=10)
+
+    ttk.Separator(Frame_principal, orient='horizontal').grid(row=3,pady=10)
+
+    if datos['cifrado'] == 'C':
+
+        frame_cesar = ttk.Frame(Frame_principal)
+        frame_cesar.grid(row=4,column=0,sticky="w")
+        ttk.Label(frame_cesar,text=configuracion["ventana_principal"]["cesar"], font= ("bahnschrift",11,"underline")).grid(row=1,sticky = "w",columnspan=2)
+        ttk.Label(frame_cesar,text=configuracion["ventana_envio"]["clave"], font= ("bahnschrift",10)).grid(row=2,sticky = "w",padx=10,pady=10)
+        ttk.Entry(frame_cesar,width=10,textvariable= var_clave).grid(row=2,column=1,pady=10)
+
+    ttk.Button(Frame_principal,text=configuracion["ventana_envio"]["enviar"], command = lambda : procesar_envio(usuario_ingresado,configuracion, var_texto.get(), datos['cifrado'], var_clave.get(), datos['destinatario'], raiz), width=15).grid(row=11,padx=10,pady=5)
+
+    Frame_principal.pack(padx=10, pady=10)
 
 def crear_interfaz_bienvenida(raiz, configuracion):
     # Crea la interfaz de la pantalla de bienvenida
