@@ -5,32 +5,16 @@ def enviar_mensaje(destinatario, remitente, cifrado, clave, mensaje_cifrado,conf
     # Agrega los mensajes al archivo.
     # Autor: Alessandro Perez, Dominguez Lucia Juan Pablo y Julen Gaumard
 
-    existe_destinatario = False
+    with open('mensajes.csv', 'a') as ar_mensajes:
 
-    if destinatario == '*':
-        existe_destinatario = True
+        data_cifrado = cifrado
 
-    else:
-        usuario = buscar_usuario(destinatario)
+        if cifrado == "C":
+            data_cifrado = cifrado + str(clave)
 
-        if not usuario:
-            messagebox.showerror(configuracion['errores_manejo_usuarios']['usuario_titulo'],configuracion['errores_manejo_usuarios']['usuario_texto'])
-        else:
-            existe_destinatario = True
-
-
-    if existe_destinatario:
-
-        with open('mensajes.csv', 'a') as ar_mensajes:
-    
-            data_cifrado = cifrado
-
-            if cifrado == "C":
-                data_cifrado = cifrado + str(clave)
-    
-            mensaje = destinatario + "," + remitente + "," + data_cifrado + "," + mensaje_cifrado + "\n" 
-            ar_mensajes.write(mensaje)
-            messagebox.showinfo(configuracion['exitoso']['exito'],configuracion['exitoso']['mensaje_enviado'])
+        mensaje = destinatario + "," + remitente + "," + data_cifrado + "," + mensaje_cifrado + "\n" 
+        ar_mensajes.write(mensaje)
+        messagebox.showinfo(configuracion['exitoso']['exito'],configuracion['exitoso']['mensaje_enviado'])
 
 
 def es_usuario_valido(destinatario, configuracion):

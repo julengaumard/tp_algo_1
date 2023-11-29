@@ -259,9 +259,9 @@ def crear_interfaz_principal(raiz,configuracion,usuario_ingresado):
 
     
     ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["bienvenida"] + usuario_ingresado + "!", font= ("bahnschrift",12,"underline"), foreground="grey").grid(row=0,sticky = "w")
-    ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["recibir_mensajes"],command = lambda:generar_ventana(False, 'mensajes', configuracion,usuario_ingresado),width=20).grid(row=0,padx=10,pady=5,sticky = "e")
+    ttk.Button(Frame_principal,text=configuracion["ventana_principal"]["recibir_mensajes"],command = lambda:generar_ventana(False, 'mensajes', configuracion,usuario_ingresado),width=20).grid(row=0,pady=5,sticky = "e")
     ttk.Label(Frame_principal,text=configuracion["ventana_principal"]["ingresar_mensajes"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w")
-    ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=2,column=0,padx=5,pady=10)
+    ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=2,column=0,pady=10)
 
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=3,pady=10)
 
@@ -272,7 +272,7 @@ def crear_interfaz_principal(raiz,configuracion,usuario_ingresado):
 
 
     ttk.Label(frame_cesar,text=configuracion["ventana_principal"]["cesar"], font= ("bahnschrift",11,"underline")).grid(row=1,sticky = "w",columnspan=2)
-    ttk.Label(frame_cesar,text=configuracion["ventana_principal"]["clave"], font= ("bahnschrift",10)).grid(row=2,sticky = "w",padx=10,pady=10)
+    ttk.Label(frame_cesar,text=configuracion["ventana_principal"]["clave"], font= ("bahnschrift",10)).grid(row=2,sticky = "w",pady=10)
     ttk.Entry(frame_cesar,width=10,textvariable= var_clave).grid(row=2,column=1,pady=10)
     ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda: boton_cesar(var_texto.get(),var_clave.get(),var_resultado,1,configuracion)).grid(row=2,column=2,padx=10,pady=10)
     ttk.Button(frame_cesar, text=configuracion["ventana_principal"]["descifrar"],width=8,command= lambda: boton_cesar(var_texto.get(),var_clave.get(),var_resultado,2,configuracion)).grid(row=2,column=3,pady=10)
@@ -285,8 +285,8 @@ def crear_interfaz_principal(raiz,configuracion,usuario_ingresado):
     frame_atbash.grid(row=6,column=0,sticky="w")
 
     ttk.Label(frame_atbash,text= configuracion["ventana_principal"]["atbash"], font= ("bahnschrift",11,"underline")).grid(row=1,sticky = "w",columnspan=2)
-    ttk.Button(frame_atbash, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda : boton_atbash(var_texto.get(),var_resultado,configuracion)).grid(row=2,column=0,padx=10,pady=10)
-    ttk.Button(frame_atbash, text=configuracion["ventana_principal"]["descifrar"],width=8,command= lambda : boton_atbash(var_texto.get(),var_resultado,configuracion)).grid(row=2,column=1,pady=10)
+    ttk.Button(frame_atbash, text=configuracion["ventana_principal"]["cifrar"],width=8,command= lambda : boton_atbash(var_texto.get(),var_resultado,configuracion)).grid(row=2,column=0,pady=10)
+    ttk.Button(frame_atbash, text=configuracion["ventana_principal"]["descifrar"],width=8,command= lambda : boton_atbash(var_texto.get(),var_resultado,configuracion)).grid(row=2,column=1,padx=10,pady=10)
 
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=7,pady=10)
 
@@ -295,7 +295,7 @@ def crear_interfaz_principal(raiz,configuracion,usuario_ingresado):
     frame_resul.grid(row=8,column=0,sticky="w")
 
     ttk.Label(frame_resul,text=configuracion["ventana_principal"]["resultado"][0], font= ("bahnschrift",14,"underline")).grid(row=0,sticky = "w")
-    ttk.Label(frame_resul, font=("bahnschrift", 10), textvariable = var_resultado).grid(row=1, column=0, padx = 10, pady=5, sticky="w") 
+    ttk.Label(frame_resul, font=("bahnschrift", 10), textvariable = var_resultado).grid(row=1, column=0, pady=5, sticky="w") 
     var_resultado.set(configuracion["ventana_principal"]["resultado"][1])
 
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=9,pady=5)
@@ -379,7 +379,7 @@ def crear_interfaz_destinatario(raiz, configuracion, usuario_ingresado, tipo):
     frame_destinatario = ttk.Frame(raiz)
 
     ttk.Label(frame_destinatario,text=configuracion["ventana_mensajes"]["ingresar_destinatario"], font= ("bahnschrift",14,"underline")).grid(row=0,columnspan=2)
-    ttk.Label(frame_destinatario,text=configuracion["ventana_mensajes"]["ingresar_usuario"], font= ("bahnschrift",10)).grid(row=1,column = 0 ,sticky = "w",padx=10,pady=10)
+    ttk.Label(frame_destinatario,text=configuracion["ventana_mensajes"]["ingresar_usuario"], font= ("bahnschrift",10)).grid(row=1,column = 0 ,sticky = "w",padx=5,pady=10)
     ttk.Entry(frame_destinatario,textvariable=var_destinatario, width=20).grid(row=1,column=1,padx=5,pady=10)
 
     ttk.Button(frame_destinatario, text=configuracion["ventana_mensajes"]["escribir_mensaje"], command = lambda: proceder_con_envio(raiz, configuracion, usuario_ingresado, var_destinatario.get(), tipo)).grid(row=9,padx=10,pady=10,columnspan=2)
@@ -439,7 +439,7 @@ def crear_interfaz_ingreso_mensaje(raiz,configuracion,usuario_ingresado, datos):
 
     ttk.Label(Frame_principal,text=configuracion["ventana_envio"]["enviar_a"] + destinatario, font= ("bahnschrift",12,"underline"), foreground="grey").grid(row=0,sticky = "w")
     ttk.Label(Frame_principal,text=configuracion["ventana_envio"]["ingresar_mensajes"], font= ("bahnschrift",14,"underline")).grid(row=1,sticky = "w")
-    ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=2,column=0,padx=5,pady=10)
+    ttk.Entry(Frame_principal,textvariable=var_texto, width=50).grid(row=2,column=0,pady=10)
 
     ttk.Separator(Frame_principal, orient='horizontal').grid(row=3,pady=10)
 
@@ -448,7 +448,7 @@ def crear_interfaz_ingreso_mensaje(raiz,configuracion,usuario_ingresado, datos):
         frame_cesar = ttk.Frame(Frame_principal)
         frame_cesar.grid(row=4,column=0,sticky="w")
         ttk.Label(frame_cesar,text=configuracion["ventana_principal"]["cesar"], font= ("bahnschrift",11,"underline")).grid(row=1,sticky = "w",columnspan=2)
-        ttk.Label(frame_cesar,text=configuracion["ventana_envio"]["clave"], font= ("bahnschrift",10)).grid(row=2,sticky = "w",padx=10,pady=10)
+        ttk.Label(frame_cesar,text=configuracion["ventana_envio"]["clave"], font= ("bahnschrift",10)).grid(row=2,sticky = "w",pady=10)
         ttk.Entry(frame_cesar,width=10,textvariable= var_clave).grid(row=2,column=1,pady=10)
 
     ttk.Button(Frame_principal,text=configuracion["ventana_envio"]["enviar"], command = lambda : procesar_envio(usuario_ingresado,configuracion, var_texto.get(), datos['cifrado'], var_clave.get(), datos['destinatario'], raiz), width=15).grid(row=11,padx=10,pady=5)
