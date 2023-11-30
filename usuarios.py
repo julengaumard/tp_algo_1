@@ -235,7 +235,13 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada,
     
     pregunta_ingresada = obtener_indice_preguntas(pregunta_ingresada)
 
-    if usuario_ingresado and respuesta_ingresada:
+    if not usuario_ingresado:
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['error'],configuracion['errores_manejo_usuarios']['usuario_texto'])
+    
+    elif not respuesta_ingresada:
+        messagebox.showerror(configuracion['errores_manejo_usuarios']['error'],configuracion['errores_manejo_usuarios']['sin_respuesta'])
+
+    elif usuario_ingresado and respuesta_ingresada:
         ar_usuarios = open("usuarios.csv","r")
         linea = leer_linea(ar_usuarios)
         usuario_encontrado = False
@@ -271,12 +277,6 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada,
         else:
             crear_nuevo_archivo_usuario(usuario_ingresado,"intento_exitoso")
     
-    elif not usuario_ingresado:
-        messagebox.showerror(configuracion['errores_manejo_usuarios']['error'],configuracion['errores_manejo_usuarios']['usuario_texto'])
-    
-    elif not respuesta_ingresada:
-        messagebox.showerror(configuracion['errores_manejo_usuarios']['error'],configuracion['errores_manejo_usuarios']['sin_respuesta'])
-
 
 if __name__ == "__main__":
     import doctest
