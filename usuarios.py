@@ -193,49 +193,33 @@ def agregar_usuario(nombre_usuario, clave, opcion, respuesta):
 
         ar_usuarios.write(usuario)
 
-def crear_nuevo_archivo_usuario(usuario_ingresado,tipo):
-    # Crea un nuevo archivo usuarios.csv dependiendo de si el intento de recuperacion fue un existe o si fue fallido
+def crear_nuevo_archivo_usuario(usuario_ingresado,tipo_intento):
+    # Crea un nuevo archivo usuarios.csv dependiendo de si el intento de recuperacion fue un existo o si fue fallido
     # Autor: Dominguez lucia Juan Pablo
 
     ar_usuarios = open("usuarios.csv","r")
     ar_intentos = open("usuario_actualizado","w")
 
     linea = leer_linea(ar_usuarios)
-    if tipo == 1:
-        while linea:
 
-            usuario,clave,pregunta,respuesta,intentos = linea
+    usuario,clave,pregunta,respuesta,intento = linea
 
-            if usuario == usuario_ingresado:
-                intentos = int(intentos) + 1
-                intentos = str(intentos)
+    while linea:
 
-                nueva_linea = usuario + "," + clave + "," + pregunta + "," + respuesta + "," + intentos + "\n"
-                ar_intentos.write(nueva_linea)
+        if usuario_ingresado == usuario:
 
-            else:
-                nueva_linea = usuario + "," + clave + "," + pregunta + "," + respuesta + "," + intentos + "\n"
-                ar_intentos.write(nueva_linea)
+            if tipo_intento == "intento_fallido":
+                intento= str(int(intento) + 1)
+            elif tipo_intento == "intento_exitoso":
+                intento = str(0)
 
-            linea = leer_linea(ar_usuarios)
+        nueva_linea = usuario + "," + clave + "," + pregunta + "," + respuesta + "," + intento + "\n"
+        ar_intentos.write(nueva_linea)
 
-    else:
-        while linea:
+        linea = leer_linea(ar_usuarios)
 
-            usuario,clave,pregunta,respuesta,intentos = linea
-
-            if usuario == usuario_ingresado:
-                intentos = 0
-                intentos = str(intentos)
-
-                nueva_linea = usuario + "," + clave + "," + pregunta + "," + respuesta + "," + intentos + "\n"
-                ar_intentos.write(nueva_linea)
-
-            else:
-                nueva_linea = usuario + "," + clave + "," + pregunta + "," + respuesta + "," + intentos + "\n"
-                ar_intentos.write(nueva_linea)
-
-            linea = leer_linea(ar_usuarios)
+        if linea:
+            usuario,clave,pregunta,respuesta,intento = linea
 
 
     ar_usuarios.close()
@@ -281,11 +265,11 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada,
         ar_usuarios.close()
 
         if intentos_fallidos:
-            crear_nuevo_archivo_usuario(usuario_ingresado,1)
+            crear_nuevo_archivo_usuario(usuario_ingresado,"intento_fallido")
         elif bloqueado:
             messagebox.showerror(configuracion['errores_manejo_usuarios']['bloqueado_titulo'],configuracion['errores_manejo_usuarios']['bloqueado_texto'])
         else:
-            crear_nuevo_archivo_usuario(usuario_ingresado,2)
+            crear_nuevo_archivo_usuario(usuario_ingresado,"intento_exitoso")
     
     elif not usuario_ingresado:
         messagebox.showerror(configuracion['errores_manejo_usuarios']['error'],configuracion['errores_manejo_usuarios']['usuario_texto'])
@@ -297,5 +281,4 @@ def olvide_contraseña(usuario_ingresado,pregunta_ingresada,respuesta_ingresada,
 if __name__ == "__main__":
     import doctest
     print(doctest.testmod())
-
 

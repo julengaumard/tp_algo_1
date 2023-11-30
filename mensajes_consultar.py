@@ -4,6 +4,24 @@ from usuarios import leer_linea
 from tkinter import messagebox
 import os
 
+def armar_archivo_mensajes_recibidos(archivo,archivo_nuevo):
+    # Añade al archivo_nuevo las lineas del archivo, reescritas de forma distinta
+    # Autor: Dominguez Lucia Juan Pablo
+
+    linea_mensajes = leer_linea(archivo)
+
+    while linea_mensajes:
+        
+        remitente, mensaje_descifrado = linea_mensajes
+        mensaje = remitente + ',' + mensaje_descifrado + "\n"
+        
+        archivo_nuevo.write(mensaje)
+        
+        linea_mensajes = leer_linea(archivo)
+
+    archivo.close()
+
+
 def buscar_mensajes(usuario):
     # busca en el archivo mensajes.csv solo los mensajes para el destinatario o los generales y los separa en dos archivos
     # Autor: Alessandro Perez y Dominguez Lucia Juan Pablo
@@ -18,31 +36,28 @@ def buscar_mensajes(usuario):
         while linea_mensajes:
         
             destinatario, remitente, cifrado, mensaje_cifrado = linea_mensajes
+            existe_destinatario = False
+
+            if usuario == destinatario or destinatario == "*":
+                existe_destinatario = True
             
-            if usuario == destinatario:
+            if existe_destinatario:
 
                 if cifrado == 'A':
                     mensaje_descifrado = descifrado_atbash(mensaje_cifrado)
                 
                 else:
-                    clave = int(cifrado.replace("C", ""))
+                    clave = int(cifrado.replace("C",""))
                     mensaje_descifrado = descifrado_cesar(mensaje_cifrado, clave)
-
+                    
                 mensaje_privado = remitente + ',' + mensaje_descifrado + "\n"
-                ar_mensaje_privado.write(mensaje_privado)
-            
-            
-            elif destinatario == '*':
 
-                if cifrado == 'A':
-                    mensaje_descifrado = descifrado_atbash(mensaje_cifrado)
-                
+                if destinatario == "*":
+                    mensaje_general = "*" + mensaje_privado
+
+                    ar_mensaje_general.write(mensaje_general)
                 else:
-                    clave = int(cifrado.replace("C", ""))
-                    mensaje_descifrado = descifrado_cesar(mensaje_cifrado, clave)
-
-                mensaje_general = '*' + remitente + ',' + mensaje_descifrado + "\n"
-                ar_mensaje_general.write(mensaje_general)
+                    ar_mensaje_privado.write(mensaje_privado)
 
             linea_mensajes = leer_linea(ar_mensajes)
             
@@ -57,35 +72,15 @@ def juntar_mensajes():
     ar_mensaje_privado = open("mensajes_privado.csv")
     ar_mensajes_totales = open("mensajes_recibidos.csv", 'w')
     
-    linea_mensajes_general = leer_linea(ar_mensaje_general)
-    linea_mensaje_privado = leer_linea(ar_mensaje_privado)
-    
-    while linea_mensajes_general:
-        
-        remitente, mensaje_descifrado = linea_mensajes_general
-        mensaje_general = remitente + ',' + mensaje_descifrado + "\n"
-        
-        ar_mensajes_totales.write(mensaje_general)
-        
-        linea_mensajes_general = leer_linea(ar_mensaje_general)
-    
-    while linea_mensaje_privado:
-        
-        remitente, mensaje_descifrado = linea_mensaje_privado
-        mensaje_privado = remitente + ',' + mensaje_descifrado + "\n"
-        
-        ar_mensajes_totales.write(mensaje_privado)
-        
-        linea_mensaje_privado = leer_linea(ar_mensaje_privado)
-    
-    ar_mensaje_general.close()
-    os.remove("mensajes_general.csv")
+    armar_archivo_mensajes_recibidos(ar_mensaje_general,ar_mensajes_totales)
+    armar_archivo_mensajes_recibidos(ar_mensaje_privado,ar_mensajes_totales)
 
-    ar_mensaje_privado.close()
+    os.remove("mensajes_general.csv")
     os.remove("mensajes_privado.csv")
-    
+
     ar_mensajes_totales.close()
 
 def armar_archivo_mensajes(usuario_ingresado):
     buscar_mensajes(usuario_ingresado)
     juntar_mensajes()
+
