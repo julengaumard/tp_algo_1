@@ -105,7 +105,7 @@ def cargar_configuraciones():
             'error_texto': "Debes ingresar un texto",
             'error_clave': ["Debes ingresar una clave","la clave debe ser numerica"],
             'contiene_coma_titulo': "Mensaje No valido",
-            'contiene_coma_texto': "El mensaje debe contener comas ',' para ser enviado."
+            'contiene_coma_texto': "El mensaje no debe contener comas ',' para ser enviado."
         },
 
         'errores_mensajes':{
@@ -185,19 +185,18 @@ def procesar_envio(usuario_ingresado,configuracion,texto,cifrado,clave,destinata
 
     mensaje_cifrado = False
 
-    if cifrado == "C":
-        error = buscar_error_cesar(texto,clave,configuracion)
-        if not error:
-            mensaje_cifrado = cifrar_cesar(texto,int(clave))
-            
-    else:
-        error = buscar_error_atbash(texto,configuracion)
-        if not error:
-            mensaje_cifrado = cifrar_atbash(texto)
-
-    if not mensaje_cifrado == False and "," in mensaje_cifrado:
+    if "," in texto:
         messagebox.showerror(configuracion['errores_cifrado']['contiene_coma_titulo'], configuracion['errores_cifrado']['contiene_coma_texto'])
-        mensaje_cifrado = False
+    else:
+        if cifrado == "C":
+            error = buscar_error_cesar(texto,clave,configuracion)
+            if not error:
+                mensaje_cifrado = cifrar_cesar(texto,int(clave))
+                
+        else:
+            error = buscar_error_atbash(texto,configuracion)
+            if not error:
+                mensaje_cifrado = cifrar_atbash(texto)
 
     if mensaje_cifrado:
         raiz.destroy()       
